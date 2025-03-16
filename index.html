@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>配信ポケモンデータ入力フォーム</title>
+    <style>
+        body {
+            font-family: 'Hiragino Sans', 'Meiryo', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #e91e63;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="number"], input[type="date"], select, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .moves-container, .ribbons-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .moves-container input, .ribbons-container input {
+            flex: 1 0 calc(50% - 5px);
+            min-width: 120px;
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        .submit-btn {
+            background-color: #4caf50;
+            color: white;
+            flex-grow: 2;
+        }
+        .preview-btn {
+            background-color: #2196f3;
+            color: white;
+        }
+        .clear-btn {
+            background-color: #f44336;
+            color: white;
+        }
+        .json-output {
+            margin-top: 20px;
+            background-color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            display: none;
+            overflow-x: auto;
+            font-family: monospace;
+        }
+        .success-message {
+            background-color: #dff2bf;
+            color: #4F8A10;
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 4px;
+            text-align: center;
+            display: none;
+        }
+        .error-message {
+            background-color: #ffbaba;
+            color: #D8000C;
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 4px;
+            text-align: center;
+            display: none;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .loading:after {
+            content: '送信中...';
+            animation: dots 1.5s steps(5, end) infinite;
+        }
+        @keyframes dots {
+            0%, 20% { content: '送信中.'; }
+            40% { content: '送信中..'; }
+            60% { content: '送信中...'; }
+            80% { content: '送信中....'; }
+            100% { content: '送信中.....'; }
+        }
+        @media (max-width: 600px) {
+            .buttons {
+                flex-direction: column;
+            }
+            button {
+                width: 100%;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>配信ポケモンデータ入力フォーム</h1>
+    <div class="form-container">
+        <form id="pokemon-form">
+            <!-- 基本情報 -->
+            <div class="form-group">
+                <label for="id">ID (例: 0801)</label>
+                <input type="text" id="id" name="id" placeholder="世代+連番の4桁 (例: 0801)" pattern="\d{4}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="name-ja">ポケモン名 (日本語)</label>
+                <input type="text" id="name-ja" name="name-ja" required>
+            </div>
+            
+            <!-- 英語名のフィールドを削除 -->
+            
+            <div class="form-group">
+                <label for="dex-no">全国図鑑No.</label>
+                <input type="number" id="dex-no" name="dex-no" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="generation">世代</label>
+                <select id="generation" name="generation" required>
+                    <option value="">選択してください</option>
+                    <option value="1">第1世代</option>
+                    <option value="2">第2世代</option>
+                    <option value="3">第3世代</option>
+                    <option value="4">第4世代</option>
+                    <option value="5">第5世代</option>
+                    <option value="6">第6世代</option>
+                    <option value="7">第7世代</option>
+                    <option value="8">第8世代</option>
+                    <option value="9">第9世代</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="game">ゲーム</label>
+                <input type="text" id="game" name="game" placeholder="例: ソード・シールド" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="version">バージョン</label>
+                <input type="text" id="version" name="version" placeholder="例: ソード, 両方" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="event-name">配信イベント名</label>
+                <input type="text" id="event-name" name="event-name" required>
+            </div>
+            
+            <!-- 配信情報 -->
+            <div class="form-group">
+                <label for="dist-method">配信方法</label>
+                <input type="text" id="dist-method" name="dist-method" placeholder="例: Wi-Fi, シリアルコード" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="dist-location">配信場所</label>
+                <input type="text" id="dist-location" name="dist-location" placeholder="例: ポケモンセンター, オンライン" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="start-date">配信開始日</label>
+                <input type="date" id="start-date" name="start-date" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="end-date">配信終了日</label>
+                <input type="date" id="end-date" name="end-date" required>
+            </div>
+            
+            <!-- ポケモン詳細 -->
+            <div class="form-group">
+                <label for="level">レベル</label>
+                <input type="number" id="level" name="level" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="ability">とくせい</label>
+                <input type="text" id="ability" name="ability" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="nature">せいかく</label>
+                <input type="text" id="nature" name="nature" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="held-item">持ち物</label>
+                <input type="text" id="held-item" name="held-item">
+            </div>
+            
+            <div class="form-group">
+                <label>技 (最大4つ)</label>
+                <div class="moves-container">
+                    <input type="text" id="move1" name="move1" placeholder="技1">
+                    <input type="text" id="move2" name="move2" placeholder="技2">
+                    <input type="text" id="move3" name="move3" placeholder="技3">
+                    <input type="text" id="move4" name="move4" placeholder="技4">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>リボン/あかし</label>
+                <div class="ribbons-container">
+                    <input type="text" id="ribbon1" name="ribbon1" placeholder="リボン1">
+                    <input type="text" id="ribbon2" name="ribbon2" placeholder="リボン2">
+                    <input type="text" id="ribbon3" name="ribbon3" placeholder="リボン3">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="other-info">その他特記事項</label>
+                <textarea id="other-info" name="other-info" rows="3"></textarea>
+            </div>
+            
+            <div class="buttons">
+                <button type="button" class="clear-btn" onclick="clearForm()">クリア</button>
+                <button type="button" class="preview-btn" onclick="previewJSON()">JSONプレビュー</button>
+                <button type="button" class="submit-btn" onclick="submitForm()">送信</button>
+            </div>
+        </form>
+    </div>
+    
+    <div id="json-output" class="json-output"></div>
+    <div id="loading" class="loading"></div>
+    <div id="success-message" class="success-message"></div>
+    <div id="error-message" class="error-message"></div>
+    
+    <script>
+        function previewJSON() {
+            const form = document.getElementById('pokemon-form');
+            const jsonOutput = document.getElementById('json-output');
+            
+            // フォームデータの取得
+            const data = formatFormData();
+            
+            // JSONとして表示
+            jsonOutput.textContent = JSON.stringify(data, null, 2);
+            jsonOutput.style.display = 'block';
+            
+            // クリップボードコピー機能（互換性対応）
+            try {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(JSON.stringify(data))
+                        .then(() => alert('JSONがクリップボードにコピーされました！'))
+                        .catch(err => {
+                            console.error('クリップボードへのコピーに失敗しました', err);
+                            alert('JSONプレビューを表示しました。クリップボードへのコピーはできませんでした。');
+                        });
+                } else {
+                    // 古いブラウザやPermission APIが使えない場合の代替手段
+                    const textArea = document.createElement('textarea');
+                    textArea.value = JSON.stringify(data);
+                    textArea.style.position = 'fixed';
+                    textArea.style.opacity = '0';
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    
+                    try {
+                        const successful = document.execCommand('copy');
+                        if (successful) {
+                            alert('JSONがクリップボードにコピーされました！');
+                        } else {
+                            alert('JSONプレビューを表示しました。クリップボードへのコピーはできませんでした。');
+                        }
+                    } catch (err) {
+                        alert('JSONプレビューを表示しました。クリップボードへのコピーはできませんでした。');
+                    }
+                    
+                    document.body.removeChild(textArea);
+                }
+            } catch (err) {
+                alert('JSONプレビューを表示しました。');
+            }
+        }
+        
+        function formatFormData() {
+    const form = document.getElementById('pokemon-form');
+    
+    // フォームバリデーション
+    let isValid = true;
+    const requiredFields = form.querySelectorAll('[required]');
+    requiredFields.forEach(field => {
+        if (!field.value) {
+            isValid = false;
+            field.style.borderColor = '#f44336';
+        } else {
+            field.style.borderColor = '#ddd';
+        }
+    });
+    
+    if (!isValid) {
+        alert('必須項目を入力してください');
+        return null;
+    }
+    
+    return {
+        id: form.elements['id'].value,
+        name: {
+            ja: form.elements['name-ja'].value
+        },
+        dexNo: form.elements['dex-no'].value.padStart(4, '0'),
+        generation: parseInt(form.elements['generation'].value) || 0,
+        game: form.elements['game'].value,
+        version: form.elements['version'].value,
+        eventName: form.elements['event-name'].value,
+        distribution: {
+            method: form.elements['dist-method'].value,
+            location: form.elements['dist-location'].value,
+            startDate: form.elements['start-date'].value,
+            endDate: form.elements['end-date'].value
+        },
+        level: parseInt(form.elements['level'].value) || 1,
+        ability: form.elements['ability'].value,
+        nature: form.elements['nature'].value,
+        moves: [
+            form.elements['move1'].value,
+            form.elements['move2'].value,
+            form.elements['move3'].value,
+            form.elements['move4'].value
+        ].filter(move => move !== ""),
+        heldItem: form.elements['held-item'].value,
+        ribbons: [
+            form.elements['ribbon1'].value,
+            form.elements['ribbon2'].value,
+            form.elements['ribbon3'].value
+        ].filter(ribbon => ribbon !== ""),
+        otherInfo: form.elements['other-info'].value,
+        timestamp: new Date().toISOString()
+    };
+}
+        
+        function clearForm() {
+            document.getElementById('pokemon-form').reset();
+            document.getElementById('json-output').style.display = 'none';
+            document.getElementById('success-message').style.display = 'none';
+            document.getElementById('error-message').style.display = 'none';
+            
+            // 日付フィールドをリセットして今日の日付に設定
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('start-date').value = today;
+            document.getElementById('end-date').value = today;
+            
+            // 入力フィールドの赤い枠をリセット
+            const allFields = document.querySelectorAll('input, select, textarea');
+            allFields.forEach(field => {
+                field.style.borderColor = '#ddd';
+            });
+        }
+        
+        function submitForm() {
+            const data = formatFormData();
+            if (!data) return; // バリデーションエラーの場合
+            
+            const loadingDiv = document.getElementById('loading');
+            const successDiv = document.getElementById('success-message');
+            const errorDiv = document.getElementById('error-message');
+            
+            // 読み込み中表示
+            loadingDiv.style.display = 'block';
+            successDiv.style.display = 'none';
+            errorDiv.style.display = 'none';
+            
+            // Google Apps Scriptの関数を呼び出す
+            google.script.run
+                .withSuccessHandler(function(result) {
+                    loadingDiv.style.display = 'none';
+                    
+                    if (result.success) {
+                        successDiv.textContent = '✅ ' + result.message;
+                        successDiv.style.display = 'block';
+                        // フォームをリセット
+                        setTimeout(() => {
+                            clearForm();
+                        }, 3000);
+                    } else {
+                        errorDiv.textContent = '❌ ' + result.message;
+                        errorDiv.style.display = 'block';
+                    }
+                })
+                .withFailureHandler(function(error) {
+                    loadingDiv.style.display = 'none';
+                    errorDiv.textContent = '❌ エラーが発生しました: ' + error;
+                    errorDiv.style.display = 'block';
+                })
+                .savePokemonData(data);
+        }
+        
+        // 日付入力フィールドに今日の日付をデフォルト値として設定
+        window.onload = function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('start-date').value = today;
+            document.getElementById('end-date').value = today;
+        }
+    </script>
+</body>
+</html>
