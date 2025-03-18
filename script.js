@@ -178,49 +178,38 @@ function clearForm() {
     });
 }
 
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbzit6taZ9tnP5A32kJZ-kSlchMsMdxlLHO0ZEn46m9ASwZcT5-JfQKdsMtmLZzpnEmL/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyx_PN_aIaiE-4cLX6ZpH7_LgExtNoJIIBgzGqrOVDW8M3VsZThHrUdBPhWTuwVppyg/exec';
     
 function submitForm() {
     const data = formatFormData();
     if (!data) return; // バリデーションエラーの場合
-    
+
     const loadingDiv = document.getElementById('loading');
     const successDiv = document.getElementById('success-message');
     const errorDiv = document.getElementById('error-message');
-    
+
     // 読み込み中表示
     loadingDiv.style.display = 'block';
     successDiv.style.display = 'none';
     errorDiv.style.display = 'none';
-    
+
     console.log("送信データ:", data); // デバッグログ
     console.log("送信先URL:", GAS_URL); // デバッグログ
-    
-    // OPTIONSリクエストを明示的に送信してみる（デバッグ用）
+
+    // JSON形式でデータを送信
     fetch(GAS_URL, {
-        method: 'OPTIONS',
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-        }
-    })
-    .then(response => {
-        console.log("OPTIONSレスポンス:", response);
-        
-        // 実際のPOSTリクエストを送信
-        return fetch(GAS_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
-        });
+        },
+        body: JSON.stringify(data)
     })
     .then(response => {
         console.log("POSTレスポンス:", response);
         if (!response.ok) {
             throw new Error('サーバーエラー: ' + response.status);
         }
-        return response.json();
+        return response.json(); // JSON形式でレスポンスを取得
     })
     .then(result => {
         loadingDiv.style.display = 'none';
@@ -238,7 +227,7 @@ function submitForm() {
     .catch(error => {
         console.error('Fetch Error:', error); // デバッグログ
         loadingDiv.style.display = 'none';
-        errorDiv.textContent = '❌ エラーが発生しました: ' + error;
+        errorDiv.textContent = '❌ エラーが発生しました: ' + error.message;
         errorDiv.style.display = 'block';
     });
 }

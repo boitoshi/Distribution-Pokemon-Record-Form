@@ -1,53 +1,50 @@
-// 共通のヘッダー設定
-function getHeaders() {
-  return {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-    "Access-Control-Max-Age": "3600"
-  };
-}
+const HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Max-Age": "3600"
+};
+
+// スプレッドシートIDをスクリプトプロパティから取得
+const SPREADSHEET_ID = PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID');
 
 // CORS用のプリフライトリクエスト対応
 function doOptions(e) {
-  return ContentService.createTextOutput("")
-    .setMimeType(ContentService.MimeType.JSON)
-    .setHeaders(getHeaders());
+  return createJsonResponse('');
 }
 
 // POSTリクエスト対応
 function doPost(e) {
   try {
-    // POSTリクエストのデータを取得
     const data = JSON.parse(e.postData.contents);
-    
-    // データを保存する関数を呼び出し
     const result = savePokemonData(data);
-    
-    // 成功レスポンスを返す
-    return ContentService.createTextOutput(JSON.stringify(result))
-      .setMimeType(ContentService.MimeType.JSON)
-      .setHeaders(getHeaders());
+    return createJsonResponse(result);
   } catch (error) {
-    // エラーが発生した場合のレスポンス
-    return ContentService.createTextOutput(JSON.stringify({
+    return createJsonResponse({
       success: false,
       message: `エラーが発生しました: ${error.message}`
-    }))
-      .setMimeType(ContentService.MimeType.JSON)
-      .setHeaders(getHeaders());
+    });
   }
 }
 
 // GETリクエスト対応
 function doGet(e) {
-  return ContentService.createTextOutput(JSON.stringify({
+  return createJsonResponse({
     success: true,
     message: "GET request received"
-  }))
-    .setMimeType(ContentService.MimeType.JSON)
-    .setHeaders(getHeaders());
+  });
 }
+
+// JSONレスポンスを作成する共通関数
+function createJsonResponse(data) {
+  const output = ContentService.createTextOutput(JSON.stringify(data));
+  output.setMimeType(ContentService.MimeType.JSON);
+  for (const key in HEADERS) {
+    output.setHeader(key, HEADERS[key]);
+  }
+  return output;
+}
+
 
 function savePokemonData(data) {
   // スプレッドシートのIDを指定
