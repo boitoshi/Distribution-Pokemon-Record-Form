@@ -5,133 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>配信ポケモンデータ入力フォーム</title>
-    <style>
-        body {
-            font-family: 'Hiragino Sans', 'Meiryo', sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        h1 {
-            color: #e91e63;
-            text-align: center;
-            font-size: 1.8rem;
-        }
-        .form-container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input[type="text"], input[type="number"], input[type="date"], select, textarea {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        .moves-container, .ribbons-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .moves-container input, .ribbons-container input {
-            flex: 1 0 calc(50% - 5px);
-            min-width: 120px;
-        }
-        .buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            margin: 5px 0;
-        }
-        .submit-btn {
-            background-color: #4caf50;
-            color: white;
-            flex-grow: 2;
-        }
-        .preview-btn {
-            background-color: #2196f3;
-            color: white;
-        }
-        .clear-btn {
-            background-color: #f44336;
-            color: white;
-        }
-        .json-output {
-            margin-top: 20px;
-            background-color: #f8f8f8;
-            padding: 15px;
-            border-radius: 4px;
-            white-space: pre-wrap;
-            display: none;
-            overflow-x: auto;
-            font-family: monospace;
-        }
-        .success-message {
-            background-color: #dff2bf;
-            color: #4F8A10;
-            padding: 10px;
-            margin-top: 20px;
-            border-radius: 4px;
-            text-align: center;
-            display: none;
-        }
-        .error-message {
-            background-color: #ffbaba;
-            color: #D8000C;
-            padding: 10px;
-            margin-top: 20px;
-            border-radius: 4px;
-            text-align: center;
-            display: none;
-        }
-        .loading {
-            display: none;
-            text-align: center;
-            margin-top: 20px;
-        }
-        .loading:after {
-            content: '送信中...';
-            animation: dots 1.5s steps(5, end) infinite;
-        }
-        @keyframes dots {
-            0%, 20% { content: '送信中.'; }
-            40% { content: '送信中..'; }
-            60% { content: '送信中...'; }
-            80% { content: '送信中....'; }
-            100% { content: '送信中.....'; }
-        }
-        @media (max-width: 600px) {
-            .buttons {
-                flex-direction: column;
-            }
-            button {
-                width: 100%;
-            }
-            h1 {
-                font-size: 1.5rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>配信ポケモンデータ入力フォーム</h1>
@@ -179,7 +53,7 @@
             
             <div class="form-group">
                 <label for="version">バージョン</label>
-                <input type="text" id="version" name="version" placeholder="例: ソード, 両方" required>
+                <input type="text" id="version" name="version" placeholder="例: ソード, 両方">
             </div>
             
             <div class="form-group">
@@ -205,13 +79,23 @@
             
             <div class="form-group">
                 <label for="end-date">配信終了日</label>
-                <input type="date" id="end-date" name="end-date">
+                <input type="date" id="end-date" name="end-date" placeholder="選択してください">
             </div>
             
             <!-- ポケモン詳細 -->
             <div class="form-group">
                 <label for="level">レベル</label>
                 <input type="number" id="level" name="level" required>
+            </div>
+
+            <div class="form-group">
+                <label for="gender">せいべつ</label>
+                <select id="gender" name="gender">
+                    <option value="">選択してください</option>
+                    <option value="♂">♂</option>
+                    <option value="♀">♀</option>
+                    <option value="なし">なし</option>
+                </select>
             </div>
             
             <div class="form-group">
@@ -222,6 +106,17 @@
             <div class="form-group">
                 <label for="nature">せいかく</label>
                 <input type="text" id="nature" name="nature">
+            </div>
+
+            <div id="generation-fields" class="hidden">
+                <div class="form-group">
+                    <label for="gigantamax">キョダイマックス</label>
+                    <input type="text" id="gigantamax" name="gigantamax" placeholder="キョダイマックス">
+                </div>
+                <div class="form-group">
+                    <label for="terastallize">テラスタイプ</label>
+                    <input type="text" id="terastallize" name="terastallize" placeholder="テラスタイプ">
+                </div>
             </div>
             
             <div class="form-group">
@@ -266,28 +161,37 @@
     <div id="success-message" class="success-message"></div>
     <div id="error-message" class="error-message"></div>
     
-    <script>
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbwezx0Xp9TfNB5Pgp_PfWKpGGq-Y0odWSC_XgD5AJ6bDr0y2LkGvZp1LMinuDTR4zc-/exec';
+    <!-- <script>
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbw0QGwIPDEENLfqAivie5VBDc3XrwyV53aQRX9Vt1MdSNAAtks6KYGYvVx-2Adj63t0/exec';
         // ポケモンデータの読み込み
-        fetch(`${GAS_URL}?action=getPokemonData`)
+        fetch('pokemon_data.json')
             .then(response => response.json())
             .then(data => {
                 const datalist = document.getElementById('pokemon-names');
                 data.forEach(pokemon => {
                     const option = document.createElement('option');
                     option.value = pokemon.name;
-                datalist.appendChild(option);
-            });
+                    datalist.appendChild(option);
+                });
 
-            // ポケモン名が選択されたときに図鑑Noを自動入力
-            document.getElementById('name-ja').addEventListener('input', function() {
-                const selectedPokemon = data.find(pokemon => pokemon.name === this.value);
-                if (selectedPokemon) {
-                    document.getElementById('dex-no').value = selectedPokemon.dexNo;
-                }
-            });
-        })
-        .catch(error => console.error('Error loading Pokémon data:', error));
+                // ポケモン名が選択されたときに図鑑Noを自動入力
+                document.getElementById('name-ja').addEventListener('input', function() {
+                    const selectedPokemon = data.find(pokemon => pokemon.name === this.value);
+                    if (selectedPokemon) {
+                        document.getElementById('dex-no').value = selectedPokemon.dexno;
+                    }
+                });
+            })
+            .catch(error => console.error('Error loading Pokémon data:', error));
+
+        document.getElementById('generation').addEventListener('change', function() {
+            const generationFields = document.getElementById('generation-fields');
+                if (this.value === '8' || this.value === '9') {
+                    generationFields.classList.remove('hidden');
+                } else {
+                    generationFields.classList.add('hidden');
+            }
+        });
 
         function previewJSON() {
             const form = document.getElementById('pokemon-form');
@@ -305,13 +209,21 @@
             // クリップボードコピー機能（互換性対応）
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(JSON.stringify(data))
-                    .then(() => alert('JSONがクリップボードにコピーされました！'))
+                    .then(() => {
+                        jsonOutput.title = 'JSONがクリップボードにコピーされました！';
+                        jsonOutput.style.cursor = 'pointer';
+                        jsonOutput.addEventListener('mouseover', () => {
+                            jsonOutput.style.backgroundColor = '#e0f7fa';
+                        });
+                        jsonOutput.addEventListener('mouseout', () => {
+                            jsonOutput.style.backgroundColor = '#f8f8f8';
+                        });
+                    })
                     .catch(err => {
                         console.error('クリップボードへのコピーに失敗しました', err);
                         alert('JSONプレビューを表示しました。クリップボードへのコピーはできませんでした。');
                     });
             } else {
-                // 古いブラウザやPermission APIが使えない場合の代替手段
                 const textArea = document.createElement('textarea');
                 textArea.value = JSON.stringify(data);
                 textArea.style.position = 'fixed';
@@ -322,7 +234,14 @@
                 try {
                     const successful = document.execCommand('copy');
                     if (successful) {
-                        alert('JSONがクリップボードにコピーされました！');
+                        jsonOutput.title = 'JSONがクリップボードにコピーされました！';
+                        jsonOutput.style.cursor = 'pointer';
+                        jsonOutput.addEventListener('mouseover', () => {
+                            jsonOutput.style.backgroundColor = '#e0f7fa';
+                        });
+                        jsonOutput.addEventListener('mouseout', () => {
+                            jsonOutput.style.backgroundColor = '#f8f8f8';
+                        });
                     } else {
                         alert('JSONプレビューを表示しました。クリップボードへのコピーはできませんでした。');
                     }
@@ -378,6 +297,9 @@
         level: parseInt(form.elements['level'].value) || 1,
         ability: form.elements['ability'].value,
         nature: form.elements['nature'].value,
+        gender: form.elements['gender'].value,
+        gigantamax: form.elements['gigantamax'] ? form.elements['gigantamax'].value : '',
+        terastallize: form.elements['terastallize'] ? form.elements['terastallize'].value : '',
         moves: [
             form.elements['move1'].value,
             form.elements['move2'].value,
@@ -455,8 +377,16 @@
         window.onload = function() {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('start-date').value = today;
-            document.getElementById('end-date').value = today;
-        }
-    </script>
+            document.getElementById('end-date').value = ''; // 初期値を空欄に設定
+
+            // カレンダーボタンを押したときに日付を設定
+            document.getElementById('end-date').addEventListener('focus', function() {
+                if (!this.value) {
+                    this.value = today;
+                }
+            });
+        };
+    </script> -->
+    <script src="./script.js"></script>
 </body>
 </html>

@@ -1,0 +1,129 @@
+body {
+    font-family: 'Hiragino Sans', 'Meiryo', sans-serif;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 10px;
+    background-color: #f5f5f5;
+}
+h1 {
+    color: #ffbd59;
+    text-align: center;
+    font-size: 1.8rem;
+}
+.form-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+.form-group {
+    margin-bottom: 10px;
+}
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+input[type="text"], input[type="number"], input[type="date"], select, textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+.moves-container, .ribbons-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.moves-container input, .ribbons-container input {
+    flex: 1 0 calc(50% - 5px);
+    min-width: 120px;
+}
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    margin: 5px 0;
+}
+.submit-btn {
+    background-color: #4caf50;
+    color: white;
+    flex-grow: 2;
+}
+.preview-btn {
+    background-color: #2196f3;
+    color: white;
+}
+.clear-btn {
+    background-color: #f44336;
+    color: white;
+}
+.json-output {
+    margin-top: 20px;
+    background-color: #f8f8f8;
+    padding: 15px;
+    border-radius: 4px;
+    white-space: pre-wrap;
+    display: none;
+    overflow-x: auto;
+    font-family: monospace;
+}
+.success-message {
+    background-color: #dff2bf;
+    color: #4F8A10;
+    padding: 10px;
+    margin-top: 20px;
+    border-radius: 4px;
+    text-align: center;
+    display: none;
+}
+.error-message {
+    background-color: #ffbaba;
+    color: #D8000C;
+    padding: 10px;
+    margin-top: 20px;
+    border-radius: 4px;
+    text-align: center;
+    display: none;
+}
+.loading {
+    display: none;
+    text-align: center;
+    margin-top: 20px;
+}
+.loading:after {
+    content: '送信中...';
+    animation: dots 1.5s steps(5, end) infinite;
+}
+.hidden {
+    display: none;
+}
+@keyframes dots {
+    0%, 20% { content: '送信中.'; }
+    40% { content: '送信中..'; }
+    60% { content: '送信中...'; }
+    80% { content: '送信中....'; }
+    100% { content: '送信中.....'; }
+}
+@media (max-width: 600px) {
+    .buttons {
+        flex-direction: column;
+    }
+    button {
+        width: 100%;
+    }
+    h1 {
+        font-size: 1.5rem;
+    }
+}
