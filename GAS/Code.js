@@ -8,18 +8,26 @@ function doPost(e) {
 
     // 成功レスポンスを返す
     return ContentService.createTextOutput(JSON.stringify(result))
-      .setMimeType(ContentService.MimeType.JSON);
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeader("Access-Control-Allow-Origin", "*") // CORSを許可
+      .setHeader("Access-Control-Allow-Methods", "POST"); // 許可するHTTPメソッド
   } catch (error) {
     // エラーが発生した場合のレスポンス
     return ContentService.createTextOutput(JSON.stringify({
       success: false,
       message: `エラーが発生しました: ${error.message}`
-    })).setMimeType(ContentService.MimeType.JSON);
+    }))
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeader("Access-Control-Allow-Origin", "*") // CORSを許可
+      .setHeader("Access-Control-Allow-Methods", "POST"); // 許可するHTTPメソッド
   }
 }
 
 function savePokemonData(data) {
-  const sheet = SpreadsheetApp.openById('YOUR_SPREADSHEET_ID').getSheetByName('Sheet1');
+  // スプレッドシートのIDを指定
+  const sheet = SpreadsheetApp.openById('SPREADSHEET_ID').getSheetByName('Sheet1');
+
+  // データをスプレッドシートに追加
   sheet.appendRow([
     data.id,
     data.name.ja,
@@ -47,5 +55,7 @@ function savePokemonData(data) {
     data.otherInfo,
     data.timestamp
   ]);
-  return { success: true, message: 'データが保存されました' };
+
+  // 成功レスポンスを返す
+  return { success: true, message: 'データが正常に保存されました！' };
 }

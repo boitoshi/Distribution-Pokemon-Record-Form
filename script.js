@@ -179,7 +179,7 @@ function clearForm() {
 }
 
 function submitForm() {
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbyxLUZYDNTAM9cFNM6n5WlsKEVW7nb8hmeAmQ104S7KPrVa6eN9tedIVEVh4sC5M2ok/exec';
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbxeuQAha8FrxHx0L-007b3lYbNSTEIlbQXenuDJRjsED10FcPIYMoisFSIeI5-BeANU/exec';
     const data = formatFormData();
     if (!data) return; // バリデーションエラーの場合
     
