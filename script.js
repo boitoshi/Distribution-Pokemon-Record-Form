@@ -178,7 +178,7 @@ function clearForm() {
     });
 }
 
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbzMYRiM9snB5_l_465Fu83R-yEPIzJUNIfUr7K4qDDOj7SqLjF-fwCSoUUfnUb53b2H/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzit6taZ9tnP5A32kJZ-kSlchMsMdxlLHO0ZEn46m9ASwZcT5-JfQKdsMtmLZzpnEmL/exec';
     
 function submitForm() {
     const data = formatFormData();
