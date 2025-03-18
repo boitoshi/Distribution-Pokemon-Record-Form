@@ -1,5 +1,21 @@
-function doGet() {
-  return HtmlService.createHtmlOutputFromFile('index');
+function doPost(e) {
+  try {
+    // POSTリクエストのデータを取得
+    const data = JSON.parse(e.postData.contents);
+
+    // データを保存する関数を呼び出し
+    const result = savePokemonData(data);
+
+    // 成功レスポンスを返す
+    return ContentService.createTextOutput(JSON.stringify(result))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    // エラーが発生した場合のレスポンス
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      message: `エラーが発生しました: ${error.message}`
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
 }
 
 function savePokemonData(data) {
@@ -17,8 +33,11 @@ function savePokemonData(data) {
     data.distribution.startDate,
     data.distribution.endDate,
     data.level,
+    data.gender,
     data.ability,
     data.nature,
+    data.gigantamax,
+    data.terastallize,
     data.heldItem,
     data.moves[0] || '',
     data.moves[1] || '',
@@ -29,10 +48,4 @@ function savePokemonData(data) {
     data.timestamp
   ]);
   return { success: true, message: 'データが保存されました' };
-}
-
-function getPokemonData() {
-  const url = 'https://raw.githubusercontent.com/boitoshi/JSON-conversion-spreadsheet/refs/heads/main/pokemon_data.json'; // JSONファイルのURL
-  const response = UrlFetchApp.fetch(url);
-  return JSON.parse(response.getContentText());
 }

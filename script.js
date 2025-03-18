@@ -179,7 +179,7 @@ function clearForm() {
 }
 
 function submitForm() {
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbyD59cXT5Ng4tvNR9FCGRWPm5Uzoc0RJ2srYHop3GKfB_0Y8cKpn7ZJ6bus6Hs_8_g-/exec';
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbyxLUZYDNTAM9cFNM6n5WlsKEVW7nb8hmeAmQ104S7KPrVa6eN9tedIVEVh4sC5M2ok/exec';
     const data = formatFormData();
     if (!data) return; // バリデーションエラーの場合
     
@@ -192,30 +192,32 @@ function submitForm() {
     successDiv.style.display = 'none';
     errorDiv.style.display = 'none';
     
-    // Google Apps Scriptの関数を呼び出す
-    google.script.run
-        .withSuccessHandler(function(result) {
-            loadingDiv.style.display = 'none';
-            
-            if (result.success) {
-                successDiv.textContent = '✅ ' + result.message;
-                successDiv.style.display = 'block';
-                // フォームをリセット
-                setTimeout(() => {
-                    clearForm();
-                }, 3000);
-            } else {
-                errorDiv.textContent = '❌ ' + result.message;
-                errorDiv.style.display = 'block';
-            }
-        })
-        .withFailureHandler(function(error) {
-            loadingDiv.style.display = 'none';
-            errorDiv.textContent = '❌ エラーが発生しました: ' + error;
+   // fetchを使用してデータを送信
+   fetch(GAS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        loadingDiv.style.display = 'none';
+        if (result.success) {
+            successDiv.textContent = '✅ ' + result.message;
+            successDiv.style.display = 'block';
+            setTimeout(() => {
+                clearForm();
+            }, 3000);
+        } else {
+            errorDiv.textContent = '❌ ' + result.message;
             errorDiv.style.display = 'block';
-        })
-        .savePokemonData(data);
-}
+        }
+    })
+    .catch(error => {
+        loadingDiv.style.display = 'none';
+        errorDiv.textContent = '❌ エラーが発生しました: ' + error;
+        errorDiv.style.display = 'block';
+    });
+    }
 
 // 日付入力フィールドに今日の日付をデフォルト値として設定
 window.onload = function() {
