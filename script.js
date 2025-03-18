@@ -194,10 +194,11 @@ function submitForm() {
     errorDiv.style.display = 'none';
     
    // fetchを使用してデータを送信
-   fetch(GAS_URL, {
+    fetch(GAS_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
+        mode: 'cors' // CORSモードを明示的に設定
     })
     .then(response => response.json())
     .then(result => {
