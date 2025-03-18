@@ -10,7 +10,8 @@ function doPost(e) {
     return ContentService.createTextOutput(JSON.stringify(result))
       .setMimeType(ContentService.MimeType.JSON)
       .setHeader("Access-Control-Allow-Origin", "*") // CORSを許可
-      .setHeader("Access-Control-Allow-Methods", "POST"); // 許可するHTTPメソッド
+      .setHeader("Access-Control-Allow-Methods", "POST, OPTIONS") // 許可するHTTPメソッド
+      .setHeader("Access-Control-Allow-Headers", "Content-Type"); // 許可するヘッダー
   } catch (error) {
     // エラーが発生した場合のレスポンス
     return ContentService.createTextOutput(JSON.stringify({
@@ -19,8 +20,17 @@ function doPost(e) {
     }))
       .setMimeType(ContentService.MimeType.JSON)
       .setHeader("Access-Control-Allow-Origin", "*") // CORSを許可
-      .setHeader("Access-Control-Allow-Methods", "POST"); // 許可するHTTPメソッド
+      .setHeader("Access-Control-Allow-Methods", "POST, OPTIONS") // 許可するHTTPメソッド
+      .setHeader("Access-Control-Allow-Headers", "Content-Type"); // 許可するヘッダー
   }
+}
+
+function doGet(e) {
+  return ContentService.createTextOutput("")
+    .setMimeType(ContentService.MimeType.JSON)
+    .setHeader("Access-Control-Allow-Origin", "*") // CORSを許可
+    .setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS") // 許可するHTTPメソッド
+    .setHeader("Access-Control-Allow-Headers", "Content-Type"); // 許可するヘッダー
 }
 
 function savePokemonData(data) {

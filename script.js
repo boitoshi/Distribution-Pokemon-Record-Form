@@ -178,8 +178,9 @@ function clearForm() {
     });
 }
 
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxeuQAha8FrxHx0L-007b3lYbNSTEIlbQXenuDJRjsED10FcPIYMoisFSIeI5-BeANU/exechttps://script.google.com/macros/s/AKfycbyLvOm1Z7_pEe6Fqg-rCg0ZDges1uNLNcboLiZK8gj8F4OhtpHBZnfVDpwVOHkbDc6B/exec';
+    
 function submitForm() {
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbxeuQAha8FrxHx0L-007b3lYbNSTEIlbQXenuDJRjsED10FcPIYMoisFSIeI5-BeANU/exec';
     const data = formatFormData();
     if (!data) return; // バリデーションエラーの場合
     
