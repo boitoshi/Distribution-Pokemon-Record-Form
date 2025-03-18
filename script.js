@@ -178,7 +178,7 @@ function clearForm() {
     });
 }
 
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbxeuQAha8FrxHx0L-007b3lYbNSTEIlbQXenuDJRjsED10FcPIYMoisFSIeI5-BeANU/exechttps://script.google.com/macros/s/AKfycbyLvOm1Z7_pEe6Fqg-rCg0ZDges1uNLNcboLiZK8gj8F4OhtpHBZnfVDpwVOHkbDc6B/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzMYRiM9snB5_l_465Fu83R-yEPIzJUNIfUr7K4qDDOj7SqLjF-fwCSoUUfnUb53b2H/exec';
     
 function submitForm() {
     const data = formatFormData();
