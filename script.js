@@ -193,14 +193,35 @@ function submitForm() {
     successDiv.style.display = 'none';
     errorDiv.style.display = 'none';
     
-   // fetchを使用してデータを送信
+    console.log("送信データ:", data); // デバッグログ
+    console.log("送信先URL:", GAS_URL); // デバッグログ
+    
+    // OPTIONSリクエストを明示的に送信してみる（デバッグ用）
     fetch(GAS_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-        mode: 'cors' // CORSモードを明示的に設定
+        method: 'OPTIONS',
+        headers: {
+            'Content-Type': 'application/json',
+        }
     })
-    .then(response => response.json())
+    .then(response => {
+        console.log("OPTIONSレスポンス:", response);
+        
+        // 実際のPOSTリクエストを送信
+        return fetch(GAS_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+    })
+    .then(response => {
+        console.log("POSTレスポンス:", response);
+        if (!response.ok) {
+            throw new Error('サーバーエラー: ' + response.status);
+        }
+        return response.json();
+    })
     .then(result => {
         loadingDiv.style.display = 'none';
         if (result.success) {
@@ -215,11 +236,12 @@ function submitForm() {
         }
     })
     .catch(error => {
+        console.error('Fetch Error:', error); // デバッグログ
         loadingDiv.style.display = 'none';
         errorDiv.textContent = '❌ エラーが発生しました: ' + error;
         errorDiv.style.display = 'block';
     });
-    }
+}
 
 // 日付入力フィールドに今日の日付をデフォルト値として設定
 window.onload = function() {

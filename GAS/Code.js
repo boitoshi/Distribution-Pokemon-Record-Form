@@ -1,17 +1,33 @@
+// 共通のヘッダー設定
+function getHeaders() {
+  return {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Max-Age": "3600"
+  };
+}
+
+// CORS用のプリフライトリクエスト対応
+function doOptions(e) {
+  return ContentService.createTextOutput("")
+    .setMimeType(ContentService.MimeType.JSON)
+    .setHeaders(getHeaders());
+}
+
+// POSTリクエスト対応
 function doPost(e) {
   try {
     // POSTリクエストのデータを取得
     const data = JSON.parse(e.postData.contents);
-
+    
     // データを保存する関数を呼び出し
     const result = savePokemonData(data);
-
+    
     // 成功レスポンスを返す
     return ContentService.createTextOutput(JSON.stringify(result))
       .setMimeType(ContentService.MimeType.JSON)
-      .setHeader("Access-Control-Allow-Origin", "*") // CORSを許可
-      .setHeader("Access-Control-Allow-Methods", "POST, OPTIONS") // 許可するHTTPメソッド
-      .setHeader("Access-Control-Allow-Headers", "Content-Type"); // 許可するヘッダー
+      .setHeaders(getHeaders());
   } catch (error) {
     // エラーが発生した場合のレスポンス
     return ContentService.createTextOutput(JSON.stringify({
@@ -19,18 +35,18 @@ function doPost(e) {
       message: `エラーが発生しました: ${error.message}`
     }))
       .setMimeType(ContentService.MimeType.JSON)
-      .setHeader("Access-Control-Allow-Origin", "*") // CORSを許可
-      .setHeader("Access-Control-Allow-Methods", "POST, OPTIONS") // 許可するHTTPメソッド
-      .setHeader("Access-Control-Allow-Headers", "Content-Type"); // 許可するヘッダー
+      .setHeaders(getHeaders());
   }
 }
 
+// GETリクエスト対応
 function doGet(e) {
-  return ContentService.createTextOutput("")
+  return ContentService.createTextOutput(JSON.stringify({
+    success: true,
+    message: "GET request received"
+  }))
     .setMimeType(ContentService.MimeType.JSON)
-    .setHeader("Access-Control-Allow-Origin", "*") // CORSを許可
-    .setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS") // 許可するHTTPメソッド
-    .setHeader("Access-Control-Allow-Headers", "Content-Type"); // 許可するヘッダー
+    .setHeaders(getHeaders());
 }
 
 function savePokemonData(data) {
