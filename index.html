@@ -145,9 +145,8 @@
             
             <div class="form-group">
                 <label for="name-ja">ポケモン名</label>
-                <input type="text" id="name-ja" name="name-ja" required>
                 <input type="text" id="name-ja" name="name-ja" list="pokemon-names" required>
-                <datalist id="pokemon-names"></datalist>
+    <datalist id="pokemon-names"></datalist>
             </div>
             
             <!-- 英語名のフィールドを削除 -->
@@ -268,8 +267,9 @@
     <div id="error-message" class="error-message"></div>
     
     <script>
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbwezx0Xp9TfNB5Pgp_PfWKpGGq-Y0odWSC_XgD5AJ6bDr0y2LkGvZp1LMinuDTR4zc-/exec';
         // ポケモンデータの読み込み
-        fetch('pokemon_data.json')
+        fetch(`${GAS_URL}?action=getPokemonData`)
             .then(response => response.json())
             .then(data => {
                 const datalist = document.getElementById('pokemon-names');

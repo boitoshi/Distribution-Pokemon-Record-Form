@@ -18,8 +18,8 @@ Google Apps Scriptを使用して、配信ポケモンのデータを入力・�
 2. スプレッドシートのURLからIDを確認（URLの `/d/` と `/edit` の間の部分）
 
 ### 2. GASプロジェクトの設定
-1. `setEnvironmentVariables()`関数内のスプレッドシートIDを自分のものに変更
-2. `setEnvironmentVariables()`関数を一度だけ実行
+1. `GAS/Code.js` 内のスプレッドシートIDを自分のものに変更
+2. `GAS/Code.js` をGoogle Apps Scriptプロジェクトにコピー
 3. `initialize()`関数を実行して必要なシートを作成
 
 ### 3. Webアプリとして公開
@@ -48,8 +48,9 @@ Google Apps Scriptを使用して、配信ポケモンのデータを入力・�
 
 ## プロジェクト構造
 - `index.html`: フロントエンドのHTMLとJavaScript
-- `Code.js`: バックエンドのGoogle Apps Scriptコード
-- `appsscript.json`: プロジェクト設定ファイル
+- `pokemon_data.json`: ポケモンデータのJSONファイル
+- `GAS/Code.js`: バックエンドのGoogle Apps Scriptコード
+- `GAS/appsscript.json`: プロジェクト設定ファイル
 
 ## 作者
 - あかブロス
