@@ -1,5 +1,4 @@
 /* filepath: /Users/akabros/Documents/code/Distribution-Pokemon-Record-Form/script.js */
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbw0QGwIPDEENLfqAivie5VBDc3XrwyV53aQRX9Vt1MdSNAAtks6KYGYvVx-2Adj63t0/exec';
 // ポケモンデータの読み込み
 fetch('pokemon_data.json')
     .then(response => response.json())
@@ -180,6 +179,7 @@ function clearForm() {
 }
 
 function submitForm() {
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbyD59cXT5Ng4tvNR9FCGRWPm5Uzoc0RJ2srYHop3GKfB_0Y8cKpn7ZJ6bus6Hs_8_g-/exec';
     const data = formatFormData();
     if (!data) return; // バリデーションエラーの場合
     
