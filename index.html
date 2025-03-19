@@ -3,7 +3,7 @@
 <head>
     <base target="_top">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>配信ポケモンデータ入力フォーム</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -27,7 +27,7 @@
             
             <div class="form-group">
                 <label for="dex-no">全国図鑑No.</label>
-                <input type="number" id="dex-no" name="dex-no" required>
+                <input type="number" id="dex-no" name="dex-no" min="1" required>
             </div>
             
             <div class="form-group">
@@ -52,7 +52,7 @@
                     <!-- チェックボックスはJavaScriptで動的に生成されます -->
                 </div>
                 <!-- 選択されたゲームを保存する隠しフィールド -->
-                <input type="hidden" id="game" name="game">
+                <input type="hidden" id="game" name="game" value="">
             </div>
             
             <div class="form-group">
@@ -84,7 +84,7 @@
             <!-- ポケモン詳細 -->
             <div class="form-group">
                 <label for="level">レベル</label>
-                <input type="number" id="level" name="level" required>
+                <input type="number" id="level" name="level" min="1" max="100" required>
             </div>
 
             <div class="form-group">
@@ -148,9 +148,9 @@
             </div>
             
             <div class="buttons">
-                <button type="button" class="clear-btn" onclick="clearForm()">クリア</button>
-                <button type="button" class="preview-btn" onclick="previewJSON()">JSONプレビュー</button>
-                <button type="button" class="submit-btn" onclick="submitForm()">送信</button>
+                <button type="button" id="clear-button" class="clear-btn">クリア</button>
+                <button type="button" id="preview-button" class="preview-btn">JSONプレビュー</button>
+                <button type="button" id="submit-button" class="submit-btn">送信</button>
             </div>
         </form>
     </div>

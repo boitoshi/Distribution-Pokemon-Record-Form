@@ -1,4 +1,12 @@
 /* filepath: /Users/akabros/Documents/code/Distribution-Pokemon-Record-Form/script.js */
+// 設定値
+const CONFIG = {
+    GAS_URL: 'https://script.google.com/macros/s/AKfycbyx_PN_aIaiE-4cLX6ZpH7_LgExtNoJIIBgzGqrOVDW8M3VsZThHrUdBPhWTuwVppyg/exec',
+    SUCCESS_TIMEOUT: 3000,
+    FEEDBACK_TIMEOUT: 2000,
+    ANIMATION_TIMEOUT: 500
+};
+
 // 世代ごとのゲーム選択肢を定義
 const gamesPerGeneration = {
     '1': ['赤','緑','青', 'ピカチュウ'],
@@ -12,15 +20,31 @@ const gamesPerGeneration = {
     '9': ['スカーレット','バイオレット']
 };
 
-// 世代選択の変更イベント
+// DOMContentLoadedイベントで初期化処理をまとめる
 document.addEventListener('DOMContentLoaded', function() {
+    // ボタンに明示的にイベントリスナーを追加
+    document.getElementById('preview-button').addEventListener('click', previewJSON);
+    document.getElementById('submit-button').addEventListener('click', submitForm);
+    document.getElementById('clear-button').addEventListener('click', clearForm);
+    
+    // 世代選択の変更イベントを設定
     const generationSelect = document.getElementById('generation');
-    generationSelect.addEventListener('change', updateGameCheckboxes);
-
-    // 初期ロード時、すでに世代が選択されていればゲームを表示
-    if (generationSelect.value) {
-        updateGameCheckboxes();
+    if (generationSelect) {
+        generationSelect.addEventListener('change', updateGameCheckboxes);
+        generationSelect.addEventListener('change', updateGenerationSpecificFields);
+        
+        // 初期ロード時、すでに世代が選択されていればゲームを表示
+        if (generationSelect.value) {
+            updateGameCheckboxes();
+            updateGenerationSpecificFields();
+        }
     }
+    
+    // 日付入力フィールドの初期設定
+    initDateFields();
+    
+    // ポケモンデータの読み込み
+    loadPokemonData();
 });
 
 // 世代に基づいてゲームのチェックボックスを更新
@@ -44,12 +68,14 @@ function updateGameCheckboxes() {
         
         const input = document.createElement('input');
         input.type = 'checkbox';
-        input.id = `game-${game}`;
+        // 特殊文字を安全な文字列に変換
+        const safeId = `game-${game.replace(/[^a-z0-9]/gi, '-').toLowerCase()}`;
+        input.id = safeId;
         input.value = game;
         input.addEventListener('change', updateSelectedGames);
         
         const label = document.createElement('label');
-        label.htmlFor = `game-${game}`;
+        label.htmlFor = safeId;
         label.textContent = game;
         
         checkbox.appendChild(input);
@@ -67,95 +93,88 @@ function updateSelectedGames() {
     // 選択されたゲームを隠しフィールドに設定
     document.getElementById('game').value = selectedGames.join(', ');
 }
+// 世代に応じた特殊フィールドの表示/非表示を切り替える
+function updateGenerationSpecificFields() {
+    const generation = parseInt(document.getElementById('generation').value) || 0;
+    
+    // キョダイマックスフィールド
+    const gigantamaxField = document.getElementById('gigantamax-field');
+    if (gigantamaxField) {
+        gigantamaxField.style.display = generation === 8 ? 'block' : 'none';
+    }
+    
+    // テラスタイプフィールド
+    const teraField = document.getElementById('terastallize-field');
+    if (teraField) {
+        teraField.style.display = generation === 9 ? 'block' : 'none';
+    }
+}
 
 // ポケモンデータの読み込み
-fetch('pokemon_data.json')
-    .then(response => response.json())
-    .then(data => {
-        const datalist = document.getElementById('pokemon-names');
-        data.forEach(pokemon => {
-            const option = document.createElement('option');
-            option.value = pokemon.name;
-            datalist.appendChild(option);
-        });
+function loadPokemonData() {
+    fetch('pokemon_data.json')
+        .then(response => response.json())
+        .then(data => {
+            const datalist = document.getElementById('pokemon-names');
+            if (!datalist) return;
+            
+            data.forEach(pokemon => {
+                const option = document.createElement('option');
+                option.value = pokemon.name;
+                datalist.appendChild(option);
+            });
 
-        // ポケモン名が選択されたときに図鑑Noを自動入力
-        document.getElementById('name-ja').addEventListener('input', function() {
-            const selectedPokemon = data.find(pokemon => pokemon.name === this.value);
-            if (selectedPokemon) {
-                document.getElementById('dex-no').value = selectedPokemon.dexno;
+            // ポケモン名が選択されたときに図鑑Noを自動入力
+            const nameField = document.getElementById('name-ja');
+            if (nameField) {
+                nameField.addEventListener('input', function() {
+                    const selectedPokemon = data.find(pokemon => pokemon.name === this.value);
+                    if (selectedPokemon) {
+                        document.getElementById('dex-no').value = selectedPokemon.dexno;
+                    }
+                });
             }
-        });
-    })
-    .catch(error => console.error('Error loading Pokémon data:', error));
-
-document.getElementById('generation').addEventListener('change', function() {
-    const generationFields = document.getElementById('generation-fields');
-    if (this.value === '8' || this.value === '9') {
-        generationFields.classList.remove('hidden');
-    } else {
-        generationFields.classList.add('hidden');
-    }
-});
+        })
+        .catch(error => console.error('Error loading Pokémon data:', error));
+}
 
 function previewJSON() {
-    const form = document.getElementById('pokemon-form');
-    const jsonOutput = document.getElementById('json-output');
-    
-    // フォームデータの取得
     const data = formatFormData();
-    
     if (!data) return; // バリデーションエラーの場合
+    
+    const jsonOutput = document.getElementById('json-output');
     
     // JSONとして表示
     jsonOutput.textContent = JSON.stringify(data, null, 2);
     jsonOutput.style.display = 'block';
     
-    // クリップボードコピー機能（互換性対応）
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(JSON.stringify(data))
-            .then(() => {
-                jsonOutput.title = 'JSONがクリップボードにコピーされました！';
-                jsonOutput.style.cursor = 'pointer';
-                jsonOutput.addEventListener('mouseover', () => {
-                    jsonOutput.style.backgroundColor = '#e0f7fa';
-                });
-                jsonOutput.addEventListener('mouseout', () => {
-                    jsonOutput.style.backgroundColor = '#f8f8f8';
-                });
-            })
-            .catch(err => {
-                console.error('クリップボードへのコピーに失敗しました', err);
-                alert('JSONプレビューを表示しました。クリップボードへのコピーはできませんでした。');
-            });
-    } else {
-        const textArea = document.createElement('textarea');
-        textArea.value = JSON.stringify(data);
-        textArea.style.position = 'fixed';
-        textArea.style.opacity = '0';
-        document.body.appendChild(textArea);
-        textArea.select();
-        
-        try {
-            const successful = document.execCommand('copy');
-            if (successful) {
-                jsonOutput.title = 'JSONがクリップボードにコピーされました！';
-                jsonOutput.style.cursor = 'pointer';
-                jsonOutput.addEventListener('mouseover', () => {
-                    jsonOutput.style.backgroundColor = '#e0f7fa';
-                });
-                jsonOutput.addEventListener('mouseout', () => {
-                    jsonOutput.style.backgroundColor = '#f8f8f8';
-                });
-            } else {
-                alert('JSONプレビューを表示しました。クリップボードへのコピーはできませんでした。');
-            }
-        } catch (err) {
-            alert('JSONプレビューを表示しました。クリップボードへのコピーはできませんでした。');
-        }
-        
-        document.body.removeChild(textArea);
-    }
+    // モダンAPIを使用したクリップボードコピー
+    navigator.clipboard.writeText(JSON.stringify(data))
+        .then(() => {
+            // コピー成功時の視覚的フィードバック
+            jsonOutput.title = 'JSONがクリップボードにコピーされました！';
+            
+            // 一時的に背景色を変更して視覚的フィードバックを提供
+            jsonOutput.style.backgroundColor = '#e0f7fa';
+            setTimeout(() => {
+                jsonOutput.style.backgroundColor = '#f8f8f8';
+            }, 500);
+            
+            // コピー成功メッセージを表示
+            const successMessage = document.createElement('div');
+            successMessage.className = 'copy-success';
+            successMessage.textContent = 'クリップボードにコピーしました';
+            jsonOutput.prepend(successMessage);
+            
+            // メッセージを数秒後に削除
+            setTimeout(() => {
+                successMessage.remove();
+            }, 2000);
+        })
+        .catch(err => {
+            console.error('クリップボードへのコピーに失敗しました', err);
+            alert('クリップボードへのコピーに失敗しました');
+        });
 }
 
 function formatFormData() {
@@ -236,27 +255,27 @@ function clearForm() {
     document.getElementById('success-message').style.display = 'none';
     document.getElementById('error-message').style.display = 'none';
     
-    // 日付フィールドをリセットして今日の日付に設定
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('start-date').value = today;
-    document.getElementById('end-date').value = ''; // 初期値を空欄に設定
-
-    // カレンダーボタンを押したときに日付を設定
-    document.getElementById('end-date').addEventListener('focus', function() {
-        if (!this.value) {
-            this.value = today;
-        }
-    });
+    // 日付フィールドを初期状態に戻す
+    initDateFields();
 
     // 入力フィールドの赤い枠をリセット
     const allFields = document.querySelectorAll('input, select, textarea');
     allFields.forEach(field => {
         field.style.borderColor = '#ddd';
     });
+    
+    // ゲームチェックボックスをリセット
+    document.getElementById('game-checkboxes').style.borderColor = '#ddd';
+    
+    // フォームがクリアされたことをユーザーに通知
+    const successDiv = document.getElementById('success-message');
+    successDiv.textContent = 'フォームをクリアしました';
+    successDiv.style.display = 'block';
+    setTimeout(() => {
+        successDiv.style.display = 'none';
+    }, 1500);
 }
 
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbyx_PN_aIaiE-4cLX6ZpH7_LgExtNoJIIBgzGqrOVDW8M3VsZThHrUdBPhWTuwVppyg/exec';
-    
 function submitForm() {
     const data = formatFormData();
     if (!data) return; // バリデーションエラーの場合
@@ -273,52 +292,76 @@ function submitForm() {
     console.log("送信データ:", data); // デバッグログ
     console.log("送信先URL:", GAS_URL); // デバッグログ
 
-    // JSON形式でデータを送信
-    fetch(GAS_URL, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'text/plain',
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => {
-        console.log("POSTレスポンス:", response);
-        if (!response.ok) {
-            throw new Error('サーバーエラー: ' + response.status);
-        }
-        return response.json(); // JSON形式でレスポンスを取得
-    })
-    .then(result => {
-        loadingDiv.style.display = 'none';
-        if (result.success) {
-            successDiv.textContent = '✅ ' + result.message;
-            successDiv.style.display = 'block';
-            setTimeout(() => {
-                clearForm();
-            }, 3000);
-        } else {
-            errorDiv.textContent = '❌ ' + result.message;
+    // JSON形式でデータを送信（最新ブラウザ向け）
+    try {
+        fetch(GAS_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'text/plain',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            console.log("POSTレスポンスステータス:", response.status);
+            if (!response.ok) {
+                throw new Error('サーバーエラー: ' + response.status);
+            }
+            return response.text();
+        })
+        .then(text => {
+            // テキストをJSONに変換
+            let result;
+            try {
+                result = JSON.parse(text);
+            } catch (e) {
+                console.error('JSON解析エラー:', text);
+                throw new Error('レスポンスの解析に失敗しました');
+            }
+            
+            loadingDiv.style.display = 'none';
+            if (result.success) {
+                successDiv.textContent = '✅ ' + result.message;
+                successDiv.style.display = 'block';
+                setTimeout(() => {
+                    clearForm();
+                }, 3000);
+            } else {
+                errorDiv.textContent = '❌ ' + (result.message || '不明なエラーが発生しました');
+                errorDiv.style.display = 'block';
+            }
+        })
+        .catch(error => {
+            console.error('Fetch Error:', error); // デバッグログ
+            loadingDiv.style.display = 'none';
+            errorDiv.textContent = '❌ エラーが発生しました: ' + error.message;
             errorDiv.style.display = 'block';
-        }
-    })
-    .catch(error => {
-        console.error('Fetch Error:', error); // デバッグログ
+        });
+    } catch (error) {
+        console.error('送信前エラー:', error);
         loadingDiv.style.display = 'none';
-        errorDiv.textContent = '❌ エラーが発生しました: ' + error.message;
+        errorDiv.textContent = '❌ 送信処理中にエラーが発生しました: ' + error.message;
         errorDiv.style.display = 'block';
-    });
+    }
 }
 
-// 日付入力フィールドに今日の日付をデフォルト値として設定
-window.onload = function() {
+// 日付入力フィールドの初期化
+function initDateFields() {
     const today = new Date().toISOString().split('T')[0];
-    document.getElementById('start-date').value = today;
-    document.getElementById('end-date').value = ''; // 初期値を空欄に設定
-
-    // カレンダーボタンを押したときに日付を設定
-    document.getElementById('end-date').addEventListener('focus', function() {
-        if (!this.value) {
-            this.value = today;
-        }
-    });
-};
+    const startDateField = document.getElementById('start-date');
+    const endDateField = document.getElementById('end-date');
+    
+    if (startDateField) {
+        startDateField.value = today;
+    }
+    
+    if (endDateField) {
+        endDateField.value = '';
+        
+        // カレンダーボタンを押したときに日付を設定
+        endDateField.addEventListener('focus', function() {
+            if (!this.value) {
+                this.value = today;
+            }
+        });
+    }
+}
