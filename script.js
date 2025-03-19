@@ -1,4 +1,73 @@
 /* filepath: /Users/akabros/Documents/code/Distribution-Pokemon-Record-Form/script.js */
+// 世代ごとのゲーム選択肢を定義
+const gamesPerGeneration = {
+    '1': ['赤','緑','青', 'ピカチュウ'],
+    '2': ['金','銀', 'クリスタル'],
+    '3': ['ルビー','サファイア', 'エメラルド', 'ファイアレッド','リーフグリーン'],
+    '4': ['ダイヤモンド','パール', 'プラチナ', 'ハートゴールド','ソウルシルバー'],
+    '5': ['ブラック','ホワイト', 'ブラック2','ホワイト2'],
+    '6': ['X','Y', 'オメガルビー','アルファサファイア'],
+    '7': ['サン','ムーン', 'ウルトラサン','ウルトラムーン', 'Let\'s Go! ピカチュウ','Let\'s Go! イーブイ'],
+    '8': ['ソード','シールド', 'ブリリアントダイヤモンド','シャイニングパール', 'レジェンズアルセウス'],
+    '9': ['スカーレット','バイオレット']
+};
+
+// 世代選択の変更イベント
+document.addEventListener('DOMContentLoaded', function() {
+    const generationSelect = document.getElementById('generation');
+    generationSelect.addEventListener('change', updateGameCheckboxes);
+
+    // 初期ロード時、すでに世代が選択されていればゲームを表示
+    if (generationSelect.value) {
+        updateGameCheckboxes();
+    }
+});
+
+// 世代に基づいてゲームのチェックボックスを更新
+function updateGameCheckboxes() {
+    const generation = document.getElementById('generation').value;
+    const gameCheckboxesContainer = document.getElementById('game-checkboxes');
+    
+    // コンテナをクリア
+    gameCheckboxesContainer.innerHTML = '';
+    
+    // 世代が選択されていない場合は何もしない
+    if (!generation) return;
+    
+    // 選択された世代のゲームリストを取得
+    const games = gamesPerGeneration[generation] || [];
+    
+    // チェックボックスを生成して追加
+    games.forEach(game => {
+        const checkbox = document.createElement('div');
+        checkbox.className = 'checkbox-item';
+        
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.id = `game-${game}`;
+        input.value = game;
+        input.addEventListener('change', updateSelectedGames);
+        
+        const label = document.createElement('label');
+        label.htmlFor = `game-${game}`;
+        label.textContent = game;
+        
+        checkbox.appendChild(input);
+        checkbox.appendChild(label);
+        gameCheckboxesContainer.appendChild(checkbox);
+    });
+}
+
+// 選択されたゲームを更新
+function updateSelectedGames() {
+    const gameCheckboxesContainer = document.getElementById('game-checkboxes');
+    const checkboxes = gameCheckboxesContainer.querySelectorAll('input[type="checkbox"]:checked');
+    const selectedGames = Array.from(checkboxes).map(checkbox => checkbox.value);
+    
+    // 選択されたゲームを隠しフィールドに設定
+    document.getElementById('game').value = selectedGames.join(', ');
+}
+
 // ポケモンデータの読み込み
 fetch('pokemon_data.json')
     .then(response => response.json())
@@ -104,6 +173,15 @@ function formatFormData() {
         }
     });
 
+    // ゲーム選択のバリデーション追加
+    const gameField = document.getElementById('game');
+    if (!gameField.value) {
+        isValid = false;
+        document.getElementById('game-checkboxes').style.borderColor = '#f44336';
+    } else {
+        document.getElementById('game-checkboxes').style.borderColor = '#ddd';
+    }
+
     if (!isValid) {
         alert('必須項目を入力してください');
         return null;
@@ -122,7 +200,6 @@ function formatFormData() {
         dexNo: form.elements['dex-no'].value.padStart(4, '0'),
         generation: parseInt(form.elements['generation'].value) || 0,
         game: form.elements['game'].value,
-        version: form.elements['version'].value,
         eventName: form.elements['event-name'].value,
         distribution: {
             method: form.elements['dist-method'].value,

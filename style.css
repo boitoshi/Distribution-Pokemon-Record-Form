@@ -109,6 +109,38 @@ button {
 .hidden {
     display: none;
 }
+
+/* ゲームのチェックボックスコンテナ */
+.checkbox-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+/* チェックボックスアイテム */
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    padding: 5px 10px;
+}
+
+.checkbox-item input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+.checkbox-item label {
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+/* チェックされた項目のスタイル */
+.checkbox-item input[type="checkbox"]:checked + label {
+    font-weight: bold;
+    color: #007bff;
+}
 @keyframes dots {
     0%, 20% { content: '送信中.'; }
     40% { content: '送信中..'; }
