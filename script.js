@@ -61,14 +61,14 @@ function updateGameCheckboxes() {
     // 選択された世代のゲームリストを取得
     const games = gamesPerGeneration[generation] || [];
     
-    // DocumentFragmentを使用して効率的にDOM操作
-    const fragment = document.createDocumentFragment();
+    // チェックボックスを生成して追加
     games.forEach(game => {
         const checkbox = document.createElement('div');
         checkbox.className = 'checkbox-item';
         
         const input = document.createElement('input');
         input.type = 'checkbox';
+        // 特殊文字を安全な文字列に変換
         const safeId = `game-${game.replace(/[^a-z0-9]/gi, '-').toLowerCase()}`;
         input.id = safeId;
         input.value = game;
@@ -80,7 +80,7 @@ function updateGameCheckboxes() {
         
         checkbox.appendChild(input);
         checkbox.appendChild(label);
-        fragment.appendChild(checkbox);
+        gameCheckboxesContainer.appendChild(checkbox);
     });
 }
 
