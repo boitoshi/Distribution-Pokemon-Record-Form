@@ -61,14 +61,14 @@ function updateGameCheckboxes() {
     // 選択された世代のゲームリストを取得
     const games = gamesPerGeneration[generation] || [];
     
-    // チェックボックスを生成して追加
+    // DocumentFragmentを使用して効率的にDOM操作
+    const fragment = document.createDocumentFragment();
     games.forEach(game => {
         const checkbox = document.createElement('div');
         checkbox.className = 'checkbox-item';
         
         const input = document.createElement('input');
         input.type = 'checkbox';
-        // 特殊文字を安全な文字列に変換
         const safeId = `game-${game.replace(/[^a-z0-9]/gi, '-').toLowerCase()}`;
         input.id = safeId;
         input.value = game;
@@ -80,7 +80,7 @@ function updateGameCheckboxes() {
         
         checkbox.appendChild(input);
         checkbox.appendChild(label);
-        gameCheckboxesContainer.appendChild(checkbox);
+        fragment.appendChild(checkbox);
     });
 }
 
@@ -151,25 +151,7 @@ function previewJSON() {
     // モダンAPIを使用したクリップボードコピー
     navigator.clipboard.writeText(JSON.stringify(data))
         .then(() => {
-            // コピー成功時の視覚的フィードバック
-            jsonOutput.title = 'JSONがクリップボードにコピーされました！';
-            
-            // 一時的に背景色を変更して視覚的フィードバックを提供
-            jsonOutput.style.backgroundColor = '#e0f7fa';
-            setTimeout(() => {
-                jsonOutput.style.backgroundColor = '#f8f8f8';
-            }, 500);
-            
-            // コピー成功メッセージを表示
-            const successMessage = document.createElement('div');
-            successMessage.className = 'copy-success';
-            successMessage.textContent = 'クリップボードにコピーしました';
-            jsonOutput.prepend(successMessage);
-            
-            // メッセージを数秒後に削除
-            setTimeout(() => {
-                successMessage.remove();
-            }, 2000);
+            alert('JSONがクリップボードにコピーされました！');
         })
         .catch(err => {
             console.error('クリップボードへのコピーに失敗しました', err);
