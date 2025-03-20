@@ -104,20 +104,69 @@
             
             <div class="form-group">
                 <label for="nature">せいかく</label>
-                <input type="text" id="nature" name="nature">
+                <input type="text" id="nature" name="nature" list="nature-options" placeholder="せいかくを入力または選択">
+                <datalist id="nature-options">
+                    <option value="がんばりや">
+                    <option value="さみしがり">
+                    <option value="ゆうかん">
+                    <option value="いじっぱり">
+                    <option value="やんちゃ">
+                    <option value="ずぶとい">
+                    <option value="すなお">
+                    <option value="のんき">
+                    <option value="わんぱく">
+                    <option value="のうてんき">
+                    <option value="おくびょう">
+                    <option value="せっかち">
+                    <option value="まじめ">
+                    <option value="ようき">
+                    <option value="むじゃき">
+                    <option value="ひかえめ">
+                    <option value="おっとり">
+                    <option value="れいせい">
+                    <option value="てれや">
+                    <option value="うっかりや">
+                    <option value="おだやか">
+                    <option value="おとなしい">
+                    <option value="なまいき">
+                    <option value="しんちょう">
+                    <option value="きまぐれ">
+                </datalist>
             </div>
 
-            <div id="generation-fields" class="hidden">
-                <div class="form-group">
+            <div id="generation-fields">
+                <!-- 第8世代: キョダイマックス -->
+                <div class="form-group hidden" id="gigantamax-field">
                     <label for="gigantamax">キョダイマックス</label>
-                    <input type="text" id="gigantamax" name="gigantamax" placeholder="キョダイマックス">
+                    <input type="checkbox" id="gigantamax" name="gigantamax" value="キョダイマックス">
                 </div>
-                <div class="form-group">
-                    <label for="terastallize">テラスタイプ</label>
-                    <input type="text" id="terastallize" name="terastallize" placeholder="テラスタイプ">
-                </div>
-            </div>
             
+                <!-- 第9世代: テラスタイプ -->
+                <div class="form-group hidden" id="terastallize-field">
+                    <label for="terastallize">テラスタイプ</label>
+                    <input type="text" id="terastallize" name="terastallize" list="terastallize-options" placeholder="テラスタイプを入力または選択">
+                    <datalist id="terastallize-options">
+                        <option value="ノーマル">
+                        <option value="ほのお">
+                        <option value="みず">
+                        <option value="でんき">
+                        <option value="くさ">
+                        <option value="こおり">
+                        <option value="かくとう">
+                        <option value="どく">
+                        <option value="じめん">
+                        <option value="ひこう">
+                        <option value="エスパー">
+                        <option value="むし">
+                        <option value="いわ">
+                        <option value="ゴースト">
+                        <option value="ドラゴン">
+                        <option value="あく">
+                        <option value="はがね">
+                        <option value="フェアリー">
+                    </datalist>
+                </div>
+                
             <div class="form-group">
                 <label for="held-item">持ち物</label>
                 <input type="text" id="held-item" name="held-item">

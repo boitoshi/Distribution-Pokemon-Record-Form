@@ -94,19 +94,45 @@ function updateSelectedGames() {
     document.getElementById('game').value = selectedGames.join(', ');
 }
 // 世代に応じた特殊フィールドの表示/非表示を切り替える
+// function updateGenerationSpecificFields() {
+//     const generation = parseInt(document.getElementById('generation').value) || 0;
+
+//     // キョダイマックスフィールド
+//     const gigantamaxField = document.getElementById('gigantamax-field');
+//     if (gigantamaxField) {
+//         if (generation === 8) {
+//             gigantamaxField.classList.remove('hidden');
+//         } else {
+//             gigantamaxField.classList.add('hidden');
+//         }
+//     }
+
+//     // テラスタイプフィールド
+//     const teraField = document.getElementById('terastallize').parentElement;
+//     if (teraField) {
+//         if (generation === 9) {
+//             teraField.classList.remove('hidden');
+//         } else {
+//             teraField.classList.add('hidden');
+//         }
+//     }
+// }
 function updateGenerationSpecificFields() {
     const generation = parseInt(document.getElementById('generation').value) || 0;
-    
-    // キョダイマックスフィールド
-    const gigantamaxField = document.getElementById('gigantamax-field');
-    if (gigantamaxField) {
-        gigantamaxField.style.display = generation === 8 ? 'block' : 'none';
-    }
-    
-    // テラスタイプフィールド
-    const teraField = document.getElementById('terastallize-field');
-    if (teraField) {
-        teraField.style.display = generation === 9 ? 'block' : 'none';
+
+    const fields = {
+        8: document.getElementById('gigantamax-field'),
+        9: document.getElementById('terastallize').parentElement
+    };
+
+    // すべてのフィールドを非表示
+    Object.values(fields).forEach(field => {
+        if (field) field.classList.add('hidden');
+    });
+
+    // 該当する世代のフィールドを表示
+    if (fields[generation]) {
+        fields[generation].classList.remove('hidden');
     }
 }
 
