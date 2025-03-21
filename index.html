@@ -14,7 +14,7 @@
             <!-- 基本情報 -->
             <div class="form-group">
                 <label for="id">管理ID</label>
-                <input type="text" id="id" name="id" placeholder="世代+連番の4桁 (例: 0801)" pattern="\d{4}" required>
+                <input type="number" id="id" name="id" placeholder="世代+連番の4桁 (例: 0801)" pattern="\d{4}" required>
             </div>
             
             <div class="form-group">
@@ -63,7 +63,16 @@
             <!-- 配信情報 -->
             <div class="form-group">
                 <label for="dist-method">配信方法</label>
-                <input type="text" id="dist-method" name="dist-method" placeholder="例: Wi-Fi, シリアルコード" required>
+                <input type="text" id="dist-method" name="dist-method" list="dist-method-options" placeholder="例: Wi-Fi, シリアルコード" required>
+                <datalist id="dist-method-options">
+                    <option value="ローカル通信">
+                    <option value="Wi-Fi">
+                    <option value="シリアルコード">
+                    <option value="配信会場">
+                    <option value="オンライン">
+                    <option value="7-spot">
+                    <option value="その他">
+                </datalist> 
             </div>
             
             <div class="form-group">
@@ -199,12 +208,13 @@
             <div class="buttons">
                 <button type="button" id="clear-button" class="clear-btn">クリア</button>
                 <button type="button" id="preview-button" class="preview-btn">JSONプレビュー</button>
-                <button type="button" id="submit-button" class="submit-btn">送信</button>
+                <span id="copy-notification" class="copy-notification">クリップボードにコピーしました！</span>
+                <button type="button" id="submit-button" class="submit-btn">JSON送信</button>
             </div>
         </form>
     </div>
     
-    <div id="json-output" class="json-output"></div>
+    <div id="json-output" style="display: none; white-space: pre-wrap; background-color: #f9f9f9; border: 1px solid #ddd; padding: 10px; margin-top: 20px;"></div>
     <div id="loading" class="loading"></div>
     <div id="success-message" class="success-message"></div>
     <div id="error-message" class="error-message"></div>

@@ -220,6 +220,25 @@ button:hover {
     animation: fadeOut 2s forwards;
 }
 
+.copy-notification {
+    display: none;
+    position: absolute;
+    background-color: #4caf50;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -150%);
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.preview-btn:hover + .copy-notification {
+    display: block;
+}
+
 /* レスポンシブデザイン */
 @media (max-width: 600px) {
     .buttons {

@@ -1,9 +1,9 @@
 /* filepath: /Users/akabros/Documents/code/Distribution-Pokemon-Record-Form/script.js */
 // 設定値
 const CONFIG = {
-    GAS_URL: 'https://script.google.com/macros/s/AKfycbyx_PN_aIaiE-4cLX6ZpH7_LgExtNoJIIBgzGqrOVDW8M3VsZThHrUdBPhWTuwVppyg/exec',
-    SUCCESS_TIMEOUT: 3000,
-    FEEDBACK_TIMEOUT: 2000,
+    GAS_URL: 'https://script.google.com/macros/s/AKfycbw1gzySCa0qlnkiu6p8HTQFz3iNX__GV_GPfdSAfXnzqyL9-JOX7Ehv7mbUYQmRu99h/exec',
+    SUCCESS_TIMEOUT: 1500,
+    FEEDBACK_TIMEOUT: 1000,
     ANIMATION_TIMEOUT: 500
 };
 
@@ -93,30 +93,7 @@ function updateSelectedGames() {
     // 選択されたゲームを隠しフィールドに設定
     document.getElementById('game').value = selectedGames.join(', ');
 }
-// 世代に応じた特殊フィールドの表示/非表示を切り替える
-// function updateGenerationSpecificFields() {
-//     const generation = parseInt(document.getElementById('generation').value) || 0;
 
-//     // キョダイマックスフィールド
-//     const gigantamaxField = document.getElementById('gigantamax-field');
-//     if (gigantamaxField) {
-//         if (generation === 8) {
-//             gigantamaxField.classList.remove('hidden');
-//         } else {
-//             gigantamaxField.classList.add('hidden');
-//         }
-//     }
-
-//     // テラスタイプフィールド
-//     const teraField = document.getElementById('terastallize').parentElement;
-//     if (teraField) {
-//         if (generation === 9) {
-//             teraField.classList.remove('hidden');
-//         } else {
-//             teraField.classList.add('hidden');
-//         }
-//     }
-// }
 function updateGenerationSpecificFields() {
     const generation = parseInt(document.getElementById('generation').value) || 0;
 
@@ -167,17 +144,21 @@ function loadPokemonData() {
 function previewJSON() {
     const data = formatFormData();
     if (!data) return; // バリデーションエラーの場合
-    
+
     const jsonOutput = document.getElementById('json-output');
-    
-    // JSONとして表示
     jsonOutput.textContent = JSON.stringify(data, null, 2);
     jsonOutput.style.display = 'block';
-    
-    // モダンAPIを使用したクリップボードコピー
+
+    // クリップボードにコピー
     navigator.clipboard.writeText(JSON.stringify(data))
         .then(() => {
-            alert('JSONがクリップボードにコピーされました！');
+            const notification = document.getElementById('copy-notification');
+            notification.style.display = 'block';
+
+            // 一定時間後に非表示にする
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 500);
         })
         .catch(err => {
             console.error('クリップボードへのコピーに失敗しました', err);
@@ -214,11 +195,6 @@ function formatFormData() {
         return null;
     }
 
-    // バージョンが空欄の場合、ゲームの値をコピー
-    if (!form.elements['version'].value) {
-        form.elements['version'].value = form.elements['game'].value;
-    }
-    
     return {
         id: form.elements['id'].value,
         name: {
