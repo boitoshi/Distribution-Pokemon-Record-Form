@@ -131,18 +131,6 @@ button:hover {
     color: var(--color-error);
 }
 
-/* ローディングメッセージ */
-.loading {
-    display: none;
-    text-align: center;
-    margin-top: 20px;
-}
-
-.loading:after {
-    content: '送信中...';
-    animation: dots 1.5s steps(5, end) infinite;
-}
-
 .hidden {
     display: none;
 }
@@ -191,21 +179,6 @@ button:hover {
 .checkbox-item input[type="checkbox"]:checked + label {
     font-weight: bold;
     color: var(--color-primary);
-}
-
-/* アニメーション */
-@keyframes dots {
-    0%, 20% { content: '送信中.'; }
-    40% { content: '送信中..'; }
-    60% { content: '送信中...'; }
-    80% { content: '送信中....'; }
-    100% { content: '送信中.....'; }
-}
-
-@keyframes fadeOut {
-    0% { opacity: 1; }
-    70% { opacity: 1; }
-    100% { opacity: 0; }
 }
 
 .copy-success {

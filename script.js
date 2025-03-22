@@ -1,7 +1,7 @@
 /* filepath: /Users/akabros/Documents/code/Distribution-Pokemon-Record-Form/script.js */
 // 設定値
 const CONFIG = {
-    GAS_URL: 'https://script.google.com/macros/s/AKfycbw1gzySCa0qlnkiu6p8HTQFz3iNX__GV_GPfdSAfXnzqyL9-JOX7Ehv7mbUYQmRu99h/exec',
+    GAS_URL: 'https://script.google.com/macros/s/AKfycbwad4kjABFIaXh0oGtV93EKVZt5dk-2mS0FLsG8Vg7lGPqL4LdPlg_p3677XorbEeF6/exec',
     SUCCESS_TIMEOUT: 1500,
     FEEDBACK_TIMEOUT: 1000,
     ANIMATION_TIMEOUT: 500
@@ -264,21 +264,19 @@ function submitForm() {
     const data = formatFormData();
     if (!data) return; // バリデーションエラーの場合
 
-    const loadingDiv = document.getElementById('loading');
     const successDiv = document.getElementById('success-message');
     const errorDiv = document.getElementById('error-message');
 
     // 読み込み中表示
-    loadingDiv.style.display = 'block';
     successDiv.style.display = 'none';
     errorDiv.style.display = 'none';
 
     console.log("送信データ:", data); // デバッグログ
-    console.log("送信先URL:", GAS_URL); // デバッグログ
+    console.log("送信先URL:", CONFIG.GAS_URL); // デバッグログ
 
     // JSON形式でデータを送信（最新ブラウザ向け）
     try {
-        fetch(GAS_URL, {
+        fetch(CONFIG.GAS_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'text/plain',
@@ -302,7 +300,6 @@ function submitForm() {
                 throw new Error('レスポンスの解析に失敗しました');
             }
             
-            loadingDiv.style.display = 'none';
             if (result.success) {
                 successDiv.textContent = '✅ ' + result.message;
                 successDiv.style.display = 'block';
@@ -316,13 +313,11 @@ function submitForm() {
         })
         .catch(error => {
             console.error('Fetch Error:', error); // デバッグログ
-            loadingDiv.style.display = 'none';
             errorDiv.textContent = '❌ エラーが発生しました: ' + error.message;
             errorDiv.style.display = 'block';
         });
     } catch (error) {
         console.error('送信前エラー:', error);
-        loadingDiv.style.display = 'none';
         errorDiv.textContent = '❌ 送信処理中にエラーが発生しました: ' + error.message;
         errorDiv.style.display = 'block';
     }
