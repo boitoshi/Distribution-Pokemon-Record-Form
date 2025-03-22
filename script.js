@@ -1,7 +1,7 @@
 /* filepath: /Users/akabros/Documents/code/Distribution-Pokemon-Record-Form/script.js */
 // 設定値
 const CONFIG = {
-    GAS_URL: 'https://script.google.com/macros/s/AKfycbwad4kjABFIaXh0oGtV93EKVZt5dk-2mS0FLsG8Vg7lGPqL4LdPlg_p3677XorbEeF6/exec',
+    GAS_URL: 'https://script.google.com/macros/s/AKfycbyyVtW0pXEYvvO4UhbFP8dcYr1K-DGuOzuugZWQWkOy0Wgj3P3EENpF-wHeSDZEERo/exec',
     SUCCESS_TIMEOUT: 1500,
     FEEDBACK_TIMEOUT: 1000,
     ANIMATION_TIMEOUT: 500
