@@ -1,97 +1,73 @@
-// CORS用のプリフライトリクエスト対応
-function doGet(e) {
-  if (e.parameter.method === 'OPTIONS') {
-    return ContentService.createTextOutput('')
-      .setMimeType(ContentService.MimeType.TEXT);
-  } else {
-    // GETリクエストの処理（必要に応じて実装）
-    return ContentService.createTextOutput("GET request received")
-      .setMimeType(ContentService.MimeType.TEXT);
-  }
-}
-
-// POSTリクエスト対応
 function doPost(e) {
-  try {
-    if (!e.postData || !e.postData.contents) {
-      throw new Error("リクエストデータが空です");
-    }
-
-    // JSON解析
-    const data = JSON.parse(e.postData.contents);
-
-    // データを保存
-    const result = savePokemonData(data);
-
-    // CORSヘッダーを設定してレスポンスを返す
-    return ContentService.createTextOutput(JSON.stringify(result))
-      .setMimeType(ContentService.MimeType.JSON)
-      .setHeaders({
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type'
-      });
-  } catch (error) {
-    // エラー発生時もCORSヘッダーを設定してレスポンスを返す
-    return ContentService.createTextOutput(JSON.stringify({ success: false, message: `エラー: ${error.message}` }))
-      .setMimeType(ContentService.MimeType.JSON)
-      .setHeaders({
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type'
-      });
+  // eがnullまたはundefinedの場合をチェック
+  if (!e || !e.postData || !e.postData.contents) {
+    console.error("Error: postData is null or undefined");
+    return ContentService.createTextOutput(JSON.stringify({ result: 'error', message: "No post data received." })).setMimeType(ContentService.MimeType.JSON);
   }
-}
-
-// スプレッドシートにデータを保存
-function savePokemonData(data) {
   try {
-    const SPREADSHEET_ID = PropertiesService.getScriptProperties().getProperty("SPREADSHEET_ID");
-    const SHEET_NAME = PropertiesService.getScriptProperties().getProperty("SHEET_NAME");
-    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-    const sheet = spreadsheet.getSheetByName(SHEET_NAME);
-
+    const data = JSON.parse(e.postData.contents);
+    const sheetName = "Sheet1"; // 適切なシート名を指定してください
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getSheetByName(sheetName);
     if (!sheet) {
-      throw new Error("シートが見つかりません");
+      throw new Error(`シート名「${sheetName}」が見つかりません。`);
     }
 
-    // データ検証（例）
-    if (!data.id || !data.name || !data.dexNo) {
-      throw new Error("必須データが不足しています");
+    // ヘッダー行の存在を確認し、なければ作成する
+    let headerRow = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    const expectedHeaders = [
+        "管理ID", "ポケモン名", "全国図鑑No", "世代", "ゲーム", "配信イベント名",
+        "配信方法", "配信場所", "配信開始日", "配信終了日",
+        "レベル", "せいべつ", "とくせい", "せいかく", "キョダイマックス", "テラスタイプ",
+        "持ち物", "技1", "技2", "技3", "技4",
+        "リボン1", "リボン2", "リボン3", "その他特記事項", "タイムスタンプ"
+    ];
+    let headerMismatch = false;
+    if (headerRow.length !== expectedHeaders.length) {
+        headerMismatch = true;
+    } else {
+        for (let i = 0; i < expectedHeaders.length; i++) {
+            if (headerRow[i] !== expectedHeaders[i]) {
+                headerMismatch = true;
+                break;
+            }
+        }
     }
 
-    const values = [[
-      data.id,
-      data.name.ja,
-      data.dexNo,
-      data.generation,
-      data.game,
-      data.eventName,
-      data.distribution?.method || '',
-      data.distribution?.location || '',
-      data.distribution?.startDate || '',
-      data.distribution?.endDate || '',
-      data.level || '',
-      data.gender || '',
-      data.ability || '',
-      data.nature || '',
-      data.gigantamax || '',
-      data.terastallize || '',
-      data.heldItem || '',
-      data.moves?.[0] || '',
-      data.moves?.[1] || '',
-      data.moves?.[2] || '',
-      data.moves?.[3] || '',
-      (data.ribbons || []).join(', '),
-      data.otherInfo || '',
-      data.timestamp || new Date().toISOString()
-    ]];
+    if (headerMismatch) {
+        sheet.clear(); // ヘッダーが不一致の場合、シートをクリアしてヘッダーを書き込む
+        sheet.appendRow(expectedHeaders);
+    }
 
-    // データを追加
-    sheet.getRange(sheet.getLastRow() + 1, 1, 1, values[0].length).setValues(values);
+    const rowData = [
+        data.id,
+        data.name.ja,
+        data.dexNo,
+        data.generation,
+        data.game,
+        data.eventName,
+        data.distribution.method,
+        data.distribution.location,
+        data.distribution.startDate,
+        data.distribution.endDate,
+        data.level,
+        data.gender,
+        data.ability,
+        data.nature,
+        data.gigantamax,
+        data.terastallize,
+        data.moves[0], data.moves[1], data.moves[2], data.moves[3],
+        data.heldItem,
+        data.ribbons[0], data.ribbons[1], data.ribbons[2],
+        data.otherInfo,
+        data.timestamp
+    ];
 
-    return { success: true, message: 'データが正常に保存されました！' };
+    sheet.appendRow(rowData);
+
+    return ContentService.createTextOutput(JSON.stringify({ result: 'success', message: "データを正常に処理しました。" })).setMimeType(ContentService.MimeType.JSON);
   } catch (error) {
-    return { success: false, message: `データ保存エラー: ${error.message}` };
+    console.error(error);
+    return ContentService.createTextOutput(JSON.stringify({ result: 'error', message: error.message })).setMimeType(ContentService.MimeType.JSON);
   }
 }
