@@ -214,7 +214,7 @@ function formatFormData() {
         ability: form.elements['ability'].value,
         nature: form.elements['nature'].value,
         gender: form.elements['gender'].value,
-        gigantamax: form.elements['gigantamax'] ? form.elements['gigantamax'].value : '',
+        gigantamax: form.elements['gigantamax'] && form.elements['gigantamax'].checked ? 'キョダイマックス' : '',
         terastallize: form.elements['terastallize'] ? form.elements['terastallize'].value : '',
         moves: [
             form.elements['move1'].value,
@@ -300,13 +300,15 @@ function submitForm() {
                 throw new Error('レスポンスの解析に失敗しました');
             }
             
-            if (result.success) {
+            // 成功時の処理
+            if (result.success === true) { // 明示的に true を確認
                 successDiv.textContent = '✅ ' + result.message;
                 successDiv.style.display = 'block';
                 setTimeout(() => {
                     clearForm();
-                }, 3000);
+                }, 2000);
             } else {
+                // エラー時の処理
                 errorDiv.textContent = '❌ ' + (result.message || '不明なエラーが発生しました');
                 errorDiv.style.display = 'block';
             }
