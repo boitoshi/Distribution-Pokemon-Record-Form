@@ -1,7 +1,7 @@
 /* filepath: /Users/akabros/Documents/code/Distribution-Pokemon-Record-Form/script.js */
 // 設定値
 const CONFIG = {
-    GAS_URL: 'https://script.google.com/macros/s/AKfycbyyVtW0pXEYvvO4UhbFP8dcYr1K-DGuOzuugZWQWkOy0Wgj3P3EENpF-wHeSDZEERo/exec',
+    GAS_URL: 'https://script.google.com/macros/s/AKfycbxDYm1dFkd_k8zKhlTM8M2bls6Yc-gExBPE1FcxXG2AY-IVGjtug_rHCaWkxASvWWrz/exec',
     SUCCESS_TIMEOUT: 1500,
     FEEDBACK_TIMEOUT: 1000,
     ANIMATION_TIMEOUT: 500
@@ -210,6 +210,10 @@ function formatFormData() {
             startDate: form.elements['start-date'].value,
             endDate: form.elements['end-date'].value
         },
+        otName: form.elements['otName'].value,
+        trainerId: form.elements['trainerId'].value,
+        metLocation: form.elements['metLocation'].value,
+        ball: form.elements['ball'].value,
         level: parseInt(form.elements['level'].value) || 1,
         ability: form.elements['ability'].value,
         nature: form.elements['nature'].value,

@@ -90,6 +90,42 @@
                 <label for="end-date">配信終了日</label>
                 <input type="date" id="end-date" name="end-date" placeholder="選択してください">
             </div>
+
+            <!-- 新しいフィールドの追加 -->
+            <div class="form-group">
+                <label for="otName">おやめい</label>
+                <input type="text" id="otName" name="otName" list="otName" placeholder="例: ゲーフリ">
+                <datalist id="otName">
+                    <option value="(プレイヤーのもの)">
+            </div>
+            
+            <div class="form-group">
+                <label for="trainerId">ID</label>
+                <input type="text" id="trainerId" name="trainerId" list="trainerId" placeholder="例: 12345">
+                <datalist id="otName">
+                    <option value="(プレイヤーのもの)">
+            </div>
+            
+            <div class="form-group">
+                <label for="metLocation">出会った場所</label>
+                <input type="text" id="metLocation" name="metLocation" placeholder="例: カントー">
+                <datalist id="metLocation">
+                    <option value="すてきなばしょ">
+                    <option value="バトルたいかい">
+                    <option value="ポケモンえいが">
+                    <option value="ポケモンばんぐみ">
+                    <option value="ポケモンイベント">
+                    <option value="ポケモンセンター">
+            </div>
+            
+            <div class="form-group">
+                <label for="ball">ボール</label>
+                <input type="text" id="ball" name="ball" list="ball" placeholder="例: モンスターボール">
+                <datalist id="ball">
+                    <option value="プレシャスボール">
+                    <option value="モンスターボール">
+                    <option value="モンスターボール(ヒスイ)">
+            </div>
             
             <!-- ポケモン詳細 -->
             <div class="form-group">
@@ -104,6 +140,7 @@
                     <option value="♂">♂</option>
                     <option value="♀">♀</option>
                     <option value="なし">なし</option>
+                    <option value="ランダム">ランダム</option>
                 </select>
             </div>
             
