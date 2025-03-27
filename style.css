@@ -243,3 +243,41 @@ button:hover {
     color: #721c24;
     border: 1px solid #f5c6cb;
 }
+
+.success-message, .error-message {
+    position: relative;
+    display: none;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+    cursor: pointer; /* ホバーできるようにカーソルを変更 */
+}
+
+.success-message {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.hover-message::after {
+    content: attr(data-message); /* data-message属性の内容を表示 */
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    z-index: 1;
+    display: none; /* 最初は非表示 */
+}
+
+.hover-message:hover::after {
+    display: block; /* ホバー時に表示 */
+}

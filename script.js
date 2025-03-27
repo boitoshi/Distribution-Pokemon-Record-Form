@@ -1,7 +1,7 @@
 /* filepath: /Users/akabros/Documents/code/Distribution-Pokemon-Record-Form/script.js */
 // 設定値
 const CONFIG = {
-    GAS_URL: 'https://script.google.com/macros/s/AKfycbxDYm1dFkd_k8zKhlTM8M2bls6Yc-gExBPE1FcxXG2AY-IVGjtug_rHCaWkxASvWWrz/exec',
+    GAS_URL: 'https://script.google.com/macros/s/AKfycbyIMGM0yzqEuRUcb9wEYSD8p8AvLI2iESfDJADEm10Wk3kIgGvRF3TnEq37ySj8KorT/exec',
     SUCCESS_TIMEOUT: 1500,
     FEEDBACK_TIMEOUT: 1000,
     ANIMATION_TIMEOUT: 500
@@ -259,9 +259,11 @@ function clearForm() {
     const successDiv = document.getElementById('success-message');
     successDiv.textContent = 'フォームをクリアしました';
     successDiv.style.display = 'block';
+    successDiv.classList.add('hover-message'); // クラスを追加
     setTimeout(() => {
         successDiv.style.display = 'none';
-    }, 1500);
+        successDiv.classList.remove('hover-message'); // クラスを削除
+    }, 2000);
 }
 
 function submitForm() {
@@ -308,24 +310,41 @@ function submitForm() {
             if (result.success === true) { // 明示的に true を確認
                 successDiv.textContent = '✅ ' + result.message;
                 successDiv.style.display = 'block';
+                successDiv.classList.add('hover-message'); // クラスを追加
                 setTimeout(() => {
-                    clearForm();
+                    successDiv.style.display = 'none';
+                    successDiv.classList.remove('hover-message'); // クラスを削除
                 }, 2000);
             } else {
                 // エラー時の処理
                 errorDiv.textContent = '❌ ' + (result.message || '不明なエラーが発生しました');
                 errorDiv.style.display = 'block';
+                errorDiv.classList.add('hover-message'); // クラスを追加
+                setTimeout(() => {
+                    errorDiv.style.display = 'none';
+                    errorDiv.classList.remove('hover-message'); // クラスを削除
+                }, 2000);
             }
         })
         .catch(error => {
             console.error('Fetch Error:', error); // デバッグログ
             errorDiv.textContent = '❌ エラーが発生しました: ' + error.message;
             errorDiv.style.display = 'block';
+            errorDiv.classList.add('hover-message'); // クラスを追加
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+                errorDiv.classList.remove('hover-message'); // クラスを削除
+            }, 2000);
         });
     } catch (error) {
         console.error('送信前エラー:', error);
         errorDiv.textContent = '❌ 送信処理中にエラーが発生しました: ' + error.message;
         errorDiv.style.display = 'block';
+        errorDiv.classList.add('hover-message'); // クラスを追加
+        setTimeout(() => {
+            errorDiv.style.display = 'none';
+            errorDiv.classList.remove('hover-message'); // クラスを削除
+        }, 2000);
     }
 }
 
