@@ -1,7 +1,7 @@
 /* filepath: /Users/akabros/Documents/code/Distribution-Pokemon-Record-Form/script.js */
 // 設定値
 const CONFIG = {
-    GAS_URL: 'https://script.google.com/macros/s/AKfycbyIMGM0yzqEuRUcb9wEYSD8p8AvLI2iESfDJADEm10Wk3kIgGvRF3TnEq37ySj8KorT/exec',
+    GAS_URL: 'https://script.google.com/macros/s/AKfycbyfhNe9CGWQ_6y4MiX8nhZqFhCd2P2TXvfZBxfrAyLDewo-6FCyRUco_J0yCNYcEwIu/exec',
     SUCCESS_TIMEOUT: 1500,
     FEEDBACK_TIMEOUT: 1000,
     ANIMATION_TIMEOUT: 500
@@ -200,6 +200,7 @@ function formatFormData() {
         name: {
             ja: form.elements['name-ja'].value
         },
+        shiny: form.elements['shiny'] && form.elements['shiny'].checked ? '色違い' : '',
         dexNo: form.elements['dex-no'].value.padStart(4, '0'),
         generation: parseInt(form.elements['generation'].value) || 0,
         game: form.elements['game'].value,
