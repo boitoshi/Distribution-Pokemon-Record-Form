@@ -295,6 +295,6 @@ const retryableService = new RetryableApiService(pokemonService);
 
 // 環境に応じてベースURLを設定
 if (window.location.hostname !== 'localhost') {
-    // 本番環境では適切なURLに変更
-    apiClient.baseUrl = 'https://your-vercel-app.vercel.app';
+    // Cloud Run本番環境URL（デプロイ後に更新）
+    apiClient.baseUrl = 'https://pokemon-api-xxxxx-an.a.run.app';
 }

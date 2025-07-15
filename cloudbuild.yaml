@@ -1,0 +1,34 @@
+# Google Cloud Build設定ファイル
+steps:
+  # Dockerイメージをビルド
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/pokemon-api:$SHORT_SHA', '.']
+  
+  # Container Registryにプッシュ
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/pokemon-api:$SHORT_SHA']
+  
+  # Cloud Runにデプロイ
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'pokemon-api'
+      - '--image=gcr.io/$PROJECT_ID/pokemon-api:$SHORT_SHA'
+      - '--region=asia-northeast1'
+      - '--platform=managed'
+      - '--allow-unauthenticated'
+      - '--port=8080'
+      - '--memory=1Gi'
+      - '--cpu=1'
+      - '--min-instances=0'
+      - '--max-instances=10'
+      - '--set-env-vars=POKEMON_SHEET_ID=${_POKEMON_SHEET_ID}'
+
+# 置換変数（Cloud Build設定で指定）
+substitutions:
+  _POKEMON_SHEET_ID: '115LHiKGpPtVAGGaV2tS2HchnZLeCFlBcRu0ZXZxJ_NQ'
+
+options:
+  # ビルド用マシンスペック
+  machineType: 'E2_HIGHCPU_8'

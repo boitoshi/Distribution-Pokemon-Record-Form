@@ -48,12 +48,22 @@ uv sync --dev
    ```
 
 ### 4. アプリケーション起動
+
+#### ローカル開発
 ```bash
 # APIサーバーを起動
 make run
 
 # または直接uvicornを使用
 uv run uvicorn api.main:app --reload --port 8000
+```
+
+#### 本番デプロイ（Google Cloud Run）
+```bash
+# Cloud Runにデプロイ
+gcloud builds submit --config cloudbuild.yaml
+
+# 詳細手順は DEPLOYMENT.md を参照
 ```
 
 ### 5. フロントエンド使用
@@ -337,6 +347,7 @@ make run  # コンソールにログが表示される
 
 ## 📚 関連ドキュメント
 
+- `DEPLOYMENT.md` - **Google Cloud Run デプロイ手順**
 - `TESTING.md` - 詳細なテスト手順
 - `PROJECT_STRUCTURE.md` - プロジェクト構造の詳細説明
 - `api/README.md` - API仕様の詳細

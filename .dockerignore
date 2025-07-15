@@ -1,0 +1,45 @@
+# Git関連
+.git
+.gitignore
+
+# Python関連
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+.pytest_cache
+.mypy_cache
+.ruff_cache
+
+# 開発環境
+.venv
+.env
+credentials.json
+
+# ドキュメント
+*.md
+docs/
+
+# テスト
+tests/
+
+# フロントエンド（Cloud Runでは不要）
+index.html
+script.js
+style.css
+api-client.js
+pokemon_data.json
+
+# レガシー
+legacy/
+migration/
+
+# IDE
+.vscode/
+.idea/
+
+# その他
+.DS_Store
+Thumbs.db
+*.log
