@@ -267,86 +267,71 @@ function clearForm() {
     }, 2000);
 }
 
-function submitForm() {
+async function submitForm() {
     const data = formatFormData();
     if (!data) return; // バリデーションエラーの場合
 
-    const successDiv = document.getElementById('success-message');
-    const errorDiv = document.getElementById('error-message');
+    // 送信中の重複防止
+    const submitButton = document.getElementById('submit-button');
+    if (submitButton.disabled) return;
+    
+    submitButton.disabled = true;
+    submitButton.textContent = '送信中...';
 
-    // 読み込み中表示
-    successDiv.style.display = 'none';
-    errorDiv.style.display = 'none';
-
-    console.log("送信データ:", data); // デバッグログ
-    console.log("送信先URL:", CONFIG.GAS_URL); // デバッグログ
-
-    // JSON形式でデータを送信（最新ブラウザ向け）
     try {
-        fetch(CONFIG.GAS_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'text/plain',
-            },
-            body: JSON.stringify(data)
-        })
-        .then(response => {
-            console.log("POSTレスポンスステータス:", response.status);
-            if (!response.ok) {
-                throw new Error('サーバーエラー: ' + response.status);
-            }
-            return response.text();
-        })
-        .then(text => {
-            // テキストをJSONに変換
-            let result;
-            try {
-                result = JSON.parse(text);
-            } catch (e) {
-                console.error('JSON解析エラー:', text);
-                throw new Error('レスポンスの解析に失敗しました');
-            }
+        // 読み込み中表示
+        uiFeedback.showLoading('データを送信中...');
+        console.log("送信データ:", data); // デバッグログ
+
+        // APIクライアントを使用してデータを送信
+        const formData = getFormData();
+        const result = await retryableService.createPokemonWithRetry(formData);
+        
+        console.log("送信結果:", result); // デバッグログ
+        
+        if (result.success) {
+            uiFeedback.showSuccess(result.message || 'データが正常に保存されました');
             
-            // 成功時の処理
-            if (result.success === true) { // 明示的に true を確認
-                successDiv.textContent = '✅ ' + result.message;
-                successDiv.style.display = 'block';
-                successDiv.classList.add('hover-message'); // クラスを追加
-                setTimeout(() => {
-                    successDiv.style.display = 'none';
-                    successDiv.classList.remove('hover-message'); // クラスを削除
-                }, 2000);
-            } else {
-                // エラー時の処理
-                errorDiv.textContent = '❌ ' + (result.message || '不明なエラーが発生しました');
-                errorDiv.style.display = 'block';
-                errorDiv.classList.add('hover-message'); // クラスを追加
-                setTimeout(() => {
-                    errorDiv.style.display = 'none';
-                    errorDiv.classList.remove('hover-message'); // クラスを削除
-                }, 2000);
-            }
-        })
-        .catch(error => {
-            console.error('Fetch Error:', error); // デバッグログ
-            errorDiv.textContent = '❌ エラーが発生しました: ' + error.message;
-            errorDiv.style.display = 'block';
-            errorDiv.classList.add('hover-message'); // クラスを追加
-            setTimeout(() => {
-                errorDiv.style.display = 'none';
-                errorDiv.classList.remove('hover-message'); // クラスを削除
-            }, 2000);
-        });
+            // 成功時はフォームをクリア（オプション）
+            // clearForm();
+        } else {
+            uiFeedback.showError(result.message || '不明なエラーが発生しました');
+        }
+        
     } catch (error) {
-        console.error('送信前エラー:', error);
-        errorDiv.textContent = '❌ 送信処理中にエラーが発生しました: ' + error.message;
-        errorDiv.style.display = 'block';
-        errorDiv.classList.add('hover-message'); // クラスを追加
-        setTimeout(() => {
-            errorDiv.style.display = 'none';
-            errorDiv.classList.remove('hover-message'); // クラスを削除
-        }, 2000);
+        console.error('送信エラー:', error);
+        
+        // ネットワークエラーかAPIエラーかを判定
+        if (error.message.includes('fetch')) {
+            uiFeedback.showError('ネットワークエラーが発生しました。接続を確認してください。');
+        } else {
+            uiFeedback.showError(`エラーが発生しました: ${error.message}`);
+        }
+    } finally {
+        // ボタンを復活
+        submitButton.disabled = false;
+        submitButton.textContent = 'JSON送信';
     }
+}
+
+// フォームデータを取得する関数
+function getFormData() {
+    const form = document.getElementById('pokemon-form');
+    const formData = new FormData(form);
+    const data = {};
+    
+    // FormDataを通常のオブジェクトに変換
+    for (let [key, value] of formData.entries()) {
+        data[key] = value;
+    }
+    
+    // チェックボックスの値も取得
+    const checkboxes = form.querySelectorAll('input[type="checkbox"]:checked');
+    checkboxes.forEach(checkbox => {
+        data[checkbox.name] = checkbox.value;
+    });
+    
+    return data;
 }
 
 // 日付入力フィールドの初期化

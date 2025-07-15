@@ -18,36 +18,40 @@
                 <p style="font-size: 0.9em;">映画: M, 大会: T, ローカル: L,シリアルコード: S,イベント会場: E</p>
             </div>
             
-            <div class="form-group">
-                <label for="name-ja">ポケモン名</label>
-                <input type="text" id="name-ja" name="name-ja" list="pokemon-names" required>
-                <datalist id="pokemon-names"></datalist>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="name-ja">ポケモン名</label>
+                    <input type="text" id="name-ja" name="name-ja" list="pokemon-names" required>
+                    <datalist id="pokemon-names"></datalist>
+                </div>
+                
+                <div class="form-group">
+                    <label for="dex-no">全国図鑑No.</label>
+                    <input type="number" id="dex-no" name="dex-no" min="1" required>
+                </div>
             </div>
             
-            <div class="form-group">
-                <label for="shiny">色違い</label>
-                <input type="checkbox" id="shiny" name="shiny" value="色違い">
-            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="generation">世代</label>
+                    <select id="generation" name="generation" required>
+                        <option value="">選択してください</option>
+                        <option value="1">第1世代</option>
+                        <option value="2">第2世代</option>
+                        <option value="3">第3世代</option>
+                        <option value="4">第4世代</option>
+                        <option value="5">第5世代</option>
+                        <option value="6">第6世代</option>
+                        <option value="7">第7世代</option>
+                        <option value="8">第8世代</option>
+                        <option value="9">第9世代</option>
+                    </select>
+                </div>
 
-            <div class="form-group">
-                <label for="dex-no">全国図鑑No.</label>
-                <input type="number" id="dex-no" name="dex-no" min="1" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="generation">世代</label>
-                <select id="generation" name="generation" required>
-                    <option value="">選択してください</option>
-                    <option value="1">第1世代</option>
-                    <option value="2">第2世代</option>
-                    <option value="3">第3世代</option>
-                    <option value="4">第4世代</option>
-                    <option value="5">第5世代</option>
-                    <option value="6">第6世代</option>
-                    <option value="7">第7世代</option>
-                    <option value="8">第8世代</option>
-                    <option value="9">第9世代</option>
-                </select>
+                <div class="form-group">
+                    <label for="shiny">色違い</label>
+                    <input type="checkbox" id="shiny" name="shiny" value="色違い">
+                </div>
             </div>
             
             <div class="form-group">
@@ -65,91 +69,105 @@
             </div>
             
             <!-- 配信情報 -->
-            <div class="form-group">
-                <label for="dist-method">配信方法</label>
-                <input type="text" id="dist-method" name="dist-method" list="dist-method-options" placeholder="例: Wi-Fi, シリアルコード" required>
-                <datalist id="dist-method-options">
-                    <option value="ローカル通信">
-                    <option value="Wi-Fi">
-                    <option value="シリアルコード">
-                    <option value="配信会場">
-                    <option value="オンライン">
-                    <option value="7-spot">
-                    <option value="その他">
-                </datalist> 
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="dist-method">配信方法</label>
+                    <input type="text" id="dist-method" name="dist-method" list="dist-method-options" placeholder="例: Wi-Fi, シリアルコード" required>
+                    <datalist id="dist-method-options">
+                        <option value="ローカル通信">
+                        <option value="Wi-Fi">
+                        <option value="シリアルコード">
+                        <option value="配信会場">
+                        <option value="オンライン">
+                        <option value="7-spot">
+                        <option value="その他">
+                    </datalist> 
+                </div>
+                
+                <div class="form-group">
+                    <label for="dist-location">配信場所</label>
+                    <input type="text" id="dist-location" name="dist-location" placeholder="例: ポケモンセンター, オンライン" required>
+                </div>
             </div>
             
-            <div class="form-group">
-                <label for="dist-location">配信場所</label>
-                <input type="text" id="dist-location" name="dist-location" placeholder="例: ポケモンセンター, オンライン" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="start-date">配信開始日</label>
-                <input type="date" id="start-date" name="start-date" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="end-date">配信終了日</label>
-                <input type="date" id="end-date" name="end-date" placeholder="選択してください">
+            <div class="date-row">
+                <div class="form-group">
+                    <label for="start-date">配信開始日</label>
+                    <input type="date" id="start-date" name="start-date" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="end-date">配信終了日</label>
+                    <input type="date" id="end-date" name="end-date" placeholder="選択してください">
+                </div>
             </div>
 
             <!-- 新しいフィールドの追加 -->
-            <div class="form-group">
-                <label for="otName">おやめい</label>
-                <input type="text" id="otName" name="otName" list="otName-options" placeholder="例: ゲーフリ">
-                <datalist id="otName-options">
-                    <option value="(プレイヤーのもの)">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="otName">おやめい</label>
+                    <input type="text" id="otName" name="otName" list="otName-options" placeholder="例: ゲーフリ">
+                    <datalist id="otName-options">
+                        <option value="(プレイヤーのもの)">
+                    </datalist>
+                </div>
+                
+                <div class="form-group">
+                    <label for="trainerId">ID</label>
+                    <input type="text" id="trainerId" name="trainerId" list="trainerId-options" placeholder="例: 12345">
+                    <datalist id="trainerId-options">
+                        <option value="(プレイヤーのもの)">
+                    </datalist>
+                </div>
             </div>
             
-            <div class="form-group">
-                <label for="trainerId">ID</label>
-                <input type="text" id="trainerId" name="trainerId" list="trainerId-options" placeholder="例: 12345">
-                <datalist id="trainerId-options">
-                    <option value="(プレイヤーのもの)">
-            </div>
-            
-            <div class="form-group">
-                <label for="metLocation">出会った場所</label>
-                <input type="text" id="metLocation" name="metLocation" list="metLocation-options" placeholder="例: カントー">
-                <datalist id="metLocation-options">
-                    <option value="すてきなばしょ">
-                    <option value="バトルたいかい">
-                    <option value="ポケモンえいが">
-                    <option value="ポケモンばんぐみ">
-                    <option value="ポケモンイベント">
-                    <option value="ポケモンセンター">
-            </div>
-            
-            <div class="form-group">
-                <label for="ball">ボール</label>
-                <input type="text" id="ball" name="ball" list="ball-options" placeholder="例: モンスターボール">
-                <datalist id="ball-options">
-                    <option value="プレシャスボール">
-                    <option value="モンスターボール">
-                    <option value="モンスターボール(ヒスイ)">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="metLocation">出会った場所</label>
+                    <input type="text" id="metLocation" name="metLocation" list="metLocation-options" placeholder="例: カントー">
+                    <datalist id="metLocation-options">
+                        <option value="すてきなばしょ">
+                        <option value="バトルたいかい">
+                        <option value="ポケモンえいが">
+                        <option value="ポケモンばんぐみ">
+                        <option value="ポケモンイベント">
+                        <option value="ポケモンセンター">
+                    </datalist>
+                </div>
+                
+                <div class="form-group">
+                    <label for="ball">ボール</label>
+                    <input type="text" id="ball" name="ball" list="ball-options" placeholder="例: モンスターボール">
+                    <datalist id="ball-options">
+                        <option value="プレシャスボール">
+                        <option value="モンスターボール">
+                        <option value="モンスターボール(ヒスイ)">
+                    </datalist>
+                </div>
             </div>
             
             <!-- ポケモン詳細 -->
-            <div class="form-group">
-                <label for="level">レベル</label>
-                <input type="number" id="level" name="level" min="1" max="100" required>
-            </div>
+            <div class="form-row three-col">
+                <div class="form-group">
+                    <label for="level">レベル</label>
+                    <input type="number" id="level" name="level" min="1" max="100" required>
+                </div>
 
-            <div class="form-group">
-                <label for="gender">せいべつ</label>
-                <select id="gender" name="gender">
-                    <option value="">選択してください</option>
-                    <option value="♂">♂</option>
-                    <option value="♀">♀</option>
-                    <option value="なし">なし</option>
-                    <option value="ランダム">ランダム</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="ability">とくせい</label>
-                <input type="text" id="ability" name="ability">
+                <div class="form-group">
+                    <label for="gender">せいべつ</label>
+                    <select id="gender" name="gender">
+                        <option value="">選択してください</option>
+                        <option value="♂">♂</option>
+                        <option value="♀">♀</option>
+                        <option value="なし">なし</option>
+                        <option value="ランダム">ランダム</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="ability">とくせい</label>
+                    <input type="text" id="ability" name="ability">
+                </div>
             </div>
             
             <div class="form-group">
@@ -258,6 +276,7 @@
     <div id="json-output" style="display: none; white-space: pre-wrap; background-color: #f9f9f9; border: 1px solid #ddd; padding: 10px; margin-top: 20px;"></div>
     <div id="success-message" class="success-message"></div>
     <div id="error-message" class="error-message"></div>
+    <script src="./api-client.js"></script>
     <script src="./script.js"></script>
 </body>
 </html>

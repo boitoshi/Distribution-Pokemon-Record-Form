@@ -36,13 +36,46 @@ h1 {
 
 .form-container {
     background-color: white;
-    padding: 20px;
+    padding: 15px;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .form-group {
-    margin-bottom: 1rem;
+    margin-bottom: 0.8rem;
+}
+
+/* 2列レイアウト用のスタイル */
+.form-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 0.8rem;
+}
+
+.form-row .form-group {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.form-row.three-col .form-group {
+    flex: 1;
+}
+
+/* コンパクトなフィールド */
+.form-group.compact {
+    margin-bottom: 0.5rem;
+}
+
+/* 日付フィールド用の調整 */
+.date-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 0.8rem;
+}
+
+.date-row .form-group {
+    flex: 1;
+    margin-bottom: 0;
 }
 
 label {
@@ -214,6 +247,13 @@ button:hover {
 
 /* レスポンシブデザイン */
 @media (max-width: 600px) {
+    .form-row, .date-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    .form-row .form-group, .date-row .form-group {
+        margin-bottom: 0.8rem;
+    }
     .buttons {
         flex-direction: column;
     }
