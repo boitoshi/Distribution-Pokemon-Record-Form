@@ -5,8 +5,9 @@
 node_modules/
 npm-debug.log
 
-# 環境変数
+# 環境変数・認証情報
 .env
+credentials.json
 
 # エディタ関連
 .vscode/

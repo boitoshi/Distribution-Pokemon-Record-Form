@@ -304,10 +304,9 @@ def main():
         return
 
     # バックアップ作成
-    if args.backup:
-        if not migrator.backup_source_data():
-            logger.error("バックアップに失敗しました。")
-            return
+    if args.backup and not migrator.backup_source_data():
+        logger.error("バックアップに失敗しました。")
+        return
 
     # ドライランの場合はデータ変換のテストのみ実行
     if args.dry_run:

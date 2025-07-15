@@ -37,7 +37,7 @@ app.add_middleware(
 # データベース設定（複数シート対応）
 DATABASES = {
     "pokemon": {
-        "sheet_id": os.getenv("POKEMON_SHEET_ID", "your_sheet_id_here"),
+        "sheet_id": os.getenv("POKEMON_SHEET_ID", "115LHiKGpPtVAGGaV2tS2HchnZLeCFlBcRu0ZXZxJ_NQ"),
         "sheet_name": "Sheet1",
     },
     # 他のデータベースを追加可能
@@ -81,7 +81,7 @@ def get_google_sheets_client():
         return client
     except Exception as e:
         logger.error(f"Google Sheets認証エラー: {e}")
-        raise HTTPException(status_code=500, detail="Google Sheets認証に失敗しました")
+        raise HTTPException(status_code=500, detail="Google Sheets認証に失敗しました") from e
 
 
 def get_sheet(db_name: str, sheet_name: str = None):
@@ -98,15 +98,15 @@ def get_sheet(db_name: str, sheet_name: str = None):
         return sheet
     except Exception as e:
         logger.error(f"シート取得エラー: {e}")
-        raise HTTPException(status_code=500, detail="シートの取得に失敗しました")
+        raise HTTPException(status_code=500, detail="シートの取得に失敗しました") from e
 
 
 # Pydanticモデル定義
 class PokemonDistribution(BaseModel):
     method: str
     location: str
-    startDate: str
-    endDate: Optional[str] = None
+    start_date: str
+    end_date: Optional[str] = None
 
 
 class PokemonName(BaseModel):
@@ -117,14 +117,14 @@ class PokemonData(BaseModel):
     id: str
     name: PokemonName
     shiny: Optional[str] = ""
-    dexNo: str
+    dex_no: str
     generation: int
     game: str
-    eventName: str
+    event_name: str
     distribution: PokemonDistribution
-    otName: Optional[str] = ""
-    trainerId: Optional[str] = ""
-    metLocation: Optional[str] = ""
+    ot_name: Optional[str] = ""
+    trainer_id: Optional[str] = ""
+    met_location: Optional[str] = ""
     ball: Optional[str] = ""
     level: int
     ability: Optional[str] = ""
@@ -133,9 +133,9 @@ class PokemonData(BaseModel):
     gigantamax: Optional[str] = ""
     terastallize: Optional[str] = ""
     moves: Optional[list[str]] = []
-    heldItem: Optional[str] = ""
+    held_item: Optional[str] = ""
     ribbons: Optional[list[str]] = []
-    otherInfo: Optional[str] = ""
+    other_info: Optional[str] = ""
     timestamp: Optional[str] = None
 
 
@@ -224,17 +224,17 @@ async def create_data(db_name: str, data: PokemonData):
             data.id,
             data.name.ja,
             data.shiny,
-            data.dexNo,
+            data.dex_no,
             data.generation,
             data.game,
-            data.eventName,
+            data.event_name,
             data.distribution.method,
             data.distribution.location,
-            data.distribution.startDate,
-            data.distribution.endDate or "",
-            data.otName,
-            data.trainerId,
-            data.metLocation,
+            data.distribution.start_date,
+            data.distribution.end_date or "",
+            data.ot_name,
+            data.trainer_id,
+            data.met_location,
             data.ball,
             data.level,
             data.gender,
@@ -242,7 +242,7 @@ async def create_data(db_name: str, data: PokemonData):
             data.nature,
             data.gigantamax,
             data.terastallize,
-            data.heldItem,
+            data.held_item,
             moves[0] if len(moves) > 0 else "",
             moves[1] if len(moves) > 1 else "",
             moves[2] if len(moves) > 2 else "",
@@ -250,7 +250,7 @@ async def create_data(db_name: str, data: PokemonData):
             ribbons[0] if len(ribbons) > 0 else "",
             ribbons[1] if len(ribbons) > 1 else "",
             ribbons[2] if len(ribbons) > 2 else "",
-            data.otherInfo,
+            data.other_info,
             data.timestamp,
         ]
 
@@ -262,7 +262,7 @@ async def create_data(db_name: str, data: PokemonData):
 
     except Exception as e:
         logger.error(f"データ作成エラー: {e}")
-        raise HTTPException(status_code=500, detail=f"データの保存に失敗しました: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"データの保存に失敗しました: {str(e)}") from e
 
 
 @app.get("/api/{db_name}/data")
@@ -289,7 +289,7 @@ async def get_data(db_name: str, limit: int = 100, offset: int = 0):
 
     except Exception as e:
         logger.error(f"データ取得エラー: {e}")
-        raise HTTPException(status_code=500, detail=f"データの取得に失敗しました: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"データの取得に失敗しました: {str(e)}") from e
 
 
 @app.get("/api/{db_name}/data/{item_id}")
@@ -310,7 +310,7 @@ async def get_data_by_id(db_name: str, item_id: str):
         raise
     except Exception as e:
         logger.error(f"データ取得エラー: {e}")
-        raise HTTPException(status_code=500, detail=f"データの取得に失敗しました: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"データの取得に失敗しました: {str(e)}") from e
 
 
 @app.delete("/api/{db_name}/data/{item_id}")
@@ -331,7 +331,7 @@ async def delete_data(db_name: str, item_id: str):
         raise
     except Exception as e:
         logger.error(f"データ削除エラー: {e}")
-        raise HTTPException(status_code=500, detail=f"データの削除に失敗しました: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"データの削除に失敗しました: {str(e)}") from e
 
 
 # エラーハンドラー
@@ -349,4 +349,4 @@ async def general_exception_handler(request, exc):
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="127.0.0.1", port=8000)

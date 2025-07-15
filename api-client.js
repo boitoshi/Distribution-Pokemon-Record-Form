@@ -122,19 +122,19 @@ class PokemonApiService {
                 ja: formData['name-ja']
             },
             shiny: formData.shiny || '',
-            dexNo: formData['dex-no'].toString().padStart(4, '0'),
+            dex_no: formData['dex-no'].toString().padStart(4, '0'),
             generation: parseInt(formData.generation) || 0,
             game: formData.game,
-            eventName: formData['event-name'],
+            event_name: formData['event-name'],
             distribution: {
                 method: formData['dist-method'],
                 location: formData['dist-location'],
-                startDate: formData['start-date'],
-                endDate: formData['end-date'] || null
+                start_date: formData['start-date'],
+                end_date: formData['end-date'] || null
             },
-            otName: formData.otName || '',
-            trainerId: formData.trainerId || '',
-            metLocation: formData.metLocation || '',
+            ot_name: formData.otName || '',
+            trainer_id: formData.trainerId || '',
+            met_location: formData.metLocation || '',
             ball: formData.ball || '',
             level: parseInt(formData.level) || 1,
             ability: formData.ability || '',
@@ -148,13 +148,13 @@ class PokemonApiService {
                 formData.move3,
                 formData.move4
             ].filter(move => move && move.trim() !== ''),
-            heldItem: formData['held-item'] || '',
+            held_item: formData['held-item'] || '',
             ribbons: [
                 formData.ribbon1,
                 formData.ribbon2,
                 formData.ribbon3
             ].filter(ribbon => ribbon && ribbon.trim() !== ''),
-            otherInfo: formData['other-info'] || '',
+            other_info: formData['other-info'] || '',
             timestamp: new Date().toISOString()
         };
     }
